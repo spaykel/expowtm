@@ -14,9 +14,9 @@ export default function favorites() {
           source={require('@/assets/images/WTM-Logo.png')}
           style={styles.WTMLogo}
         />
-        <Text style={styles.text}>Favorites</Text> //screen title
+        <Text style={styles.text}>Favorites</Text> 
         <View style={styles.imageContainer}>
-            <ImageViewer imgSource={PlaceholderImage1} /> //image of favorite bar
+            <ImageViewer imgSource={PlaceholderImage1} />     
             <Text style={styles.textBox}>Closes: 2:00</Text>
         </View> 
         <View style={styles.imageContainer}>

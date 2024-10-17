@@ -18,4 +18,8 @@ const styles = StyleSheet.create({
     height: 130,
     top: 180
   },
+<<<<<<< HEAD
 });
+=======
+});
+>>>>>>> 8fe12426210e3b63720c5d47598736533970af0e

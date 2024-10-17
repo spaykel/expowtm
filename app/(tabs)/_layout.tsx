@@ -1,6 +1,10 @@
 import { Tabs } from 'expo-router';
 import React from 'react';
 import Entypo from '@expo/vector-icons/Entypo';
+<<<<<<< HEAD
+
+=======
+>>>>>>> 8fe12426210e3b63720c5d47598736533970af0e
 import { TabBarIcon } from '@/components/navigation/TabBarIcon';
 import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
@@ -28,6 +32,8 @@ export default function TabLayout() {
       />
       <Tabs.Screen
         name="favorites"
+<<<<<<< HEAD
+=======
         options={{
           title: 'Favorites',
           tabBarIcon: ({ color, focused }) => (
@@ -37,8 +43,18 @@ export default function TabLayout() {
       />
       <Tabs.Screen
         name="explore"
+>>>>>>> 8fe12426210e3b63720c5d47598736533970af0e
         options={{
-          title: 'Explore',
+          title: 'Favorites',
+          tabBarIcon: ({ color, focused }) => (
+            <Entypo name="heart-outlined" size={30} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="CustomizeProfile"
+        options={{
+          title: 'Customize Profile',
           tabBarIcon: ({ color, focused }) => (
             <TabBarIcon name={focused ? 'code-slash' : 'code-slash-outline'} color={color} />
           ),

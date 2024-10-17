@@ -24,7 +24,7 @@ export default function TabTwoScreen() {
       <ThemedView style={styles.titleContainer}>
         {/* need to change this to actually be centered and not have the spaces */}
         <View style={styles.centered}>
-          <ThemedText type="title">{'     '}Customize Profile</ThemedText>
+          <ThemedText type="title">Customize Profile</ThemedText>
         </View>
       </ThemedView>
       <Image source={require('@/assets/images/mobile_app_pfp.jpg')} style={{ alignSelf: 'center' }} />

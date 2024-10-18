@@ -61,7 +61,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     borderRadius: 10,
     paddingHorizontal: 15,
-    marginVertical: 20,
+    marginVertical: 70,          //brought down search bar
     color: 'black',
     position: 'absolute',  // Keeps it at the top
     top: 60,

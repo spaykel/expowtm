@@ -10,15 +10,16 @@ import { ThemedView } from '@/components/ThemedView';
 
 
 // change these later
-let name = "Tyler Hamilton";
-let age = 20;
-let numBarsVisited = 50;
+let name = "Enter your name";
+let age = "Enter your age";
+let numBarsVisited = "Enter the number of bars you have visited";
 
 export default function TabTwoScreen() {
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#D0D0D0', dark: '#353636' }}
-      headerImage={<Ionicons size={310} name="code-slash" style={styles.headerImage} />}>
+    // <ParallaxScrollView
+    <View style={styles.container}>
+      {/* headerBackgroundColor={{ light: '#D0D0D0', dark: '#353636' }} */}
+      {/* headerImage={<Ionicons size={310} name="code-slash" style={styles.headerImage} />}> */}
         {/* //headerImage={<Image source={headerImage} style={styles.headerImage} />} */}
 
       <ThemedView style={styles.titleContainer}>
@@ -119,7 +120,7 @@ export default function TabTwoScreen() {
           ),
         })}
       </Collapsible> */}
-    </ParallaxScrollView>
+    </View>
   );
 }
 
@@ -135,6 +136,12 @@ const styles = StyleSheet.create({
   //   height: 310,
   //   resizeMode: 'contain',
   // }
+  container:{
+    flex: 1,
+    backgroundColor: '#000000',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   titleContainer: {
     flexDirection: 'row',
     gap: 8,

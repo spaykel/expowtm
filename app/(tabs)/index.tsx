@@ -26,21 +26,21 @@ export default function HomeScreen() {
         source={require('@/assets/images/WTM-Logo.png')}
       />
 
-      <div style={styles.searchContainer}>
-      <TextInput
-        style={styles.input}
-        placeholder='Search by address'
-        placeholderTextColor="#999"
-        value={search}
-        onChangeText={setSearch}      
-      />
-      <TouchableOpacity
-        style={styles.searchButton}
-        onPress={handleAddressSearch}
+      <View style={styles.searchContainer}>
+        <TextInput
+          style={styles.input}
+          placeholder="Search by address"
+          placeholderTextColor="#999"
+          value={search}
+          onChangeText={setSearch}
+        />
+        <TouchableOpacity
+          style={styles.searchButton}
+          onPress={handleAddressSearch}
         >
           <Text style={styles.buttonText}>Search</Text>
-      </TouchableOpacity>
-      </div>
+        </TouchableOpacity>
+      </View>
 
       <Text style={styles.or}>or</Text>
       <TouchableOpacity
@@ -70,25 +70,25 @@ const styles = StyleSheet.create({
   },
   
   searchContainer: {
-    width:'75%',
-    display: 'flex',
+    width: '75%',
+    flexDirection: 'row', // align items horizontally
+    alignItems: 'center', // vertically center elements
+    marginBottom: 20,
   },
 
   input: {
-    width: '100%',
+    flex: 1, // take up remaining space in the row
     padding: 15,
-    marginBottom: 20,
-    marginRight:5,
-    borderRadius: 999,
+    borderTopLeftRadius: 25,
+    borderBottomLeftRadius: 25,
     backgroundColor: '#333',
     color: '#fff',
     fontSize: 16,
   },
   searchButton: {
-    width: '25%',
     padding: 15,
-    marginBottom:20,
-    borderRadius: 25,
+    borderTopRightRadius: 25,
+    borderBottomRightRadius: 25,
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: '#333',
@@ -112,7 +112,4 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
   },
-  
-
-
 });

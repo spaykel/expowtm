@@ -30,6 +30,8 @@ export default function RootLayout() {
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
       <Stack>
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        {/* <Stack.Screen name="customize" options={{ title: 'Customize Profile' }} /> */}
+        <Stack.Screen name="pastReviews" options={{ title: 'Past Reviews' }} />
         <Stack.Screen name="+not-found" />
       </Stack>
     </ThemeProvider>

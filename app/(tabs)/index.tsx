@@ -1,49 +1,55 @@
-import { Image, View, StyleSheet, Platform, Text, TextInput } from 'react-native';
+import { Image, View, StyleSheet, Platform, Text, TextInput, TouchableOpacity } from 'react-native';
 import { useState } from 'react';
 import ImageViewer from "@/components/imageView";
+import { SearchBar } from 'react-native-screens';
 
 const PlaceholderImage1 = require('@/assets/images/ontherox.png');
 const PlaceholderImage2 = require('@/assets/images/Mate-bare.jpg');  //images
 const PlaceholderImage3 = require('@/assets/images/ice-bar.jpg');
 
 export default function HomeScreen() {
-  const [searchQuery, setSearchQuery] = useState('');
+  const[search,setSearch] = useState('');
+
+  const handleLocationSearch = () =>{
+    console.log('(Placeholder message) request search by location')
+  }
+
+  const handleAddressSearch = () =>{
+    console.log('Searching with address: ',search);
+  }
+
 
   return (
     <View style={styles.container}>
-      {/* Search Bar */}
-      <TextInput
-        style={styles.searchBar}
-        placeholder="Search by address"
-        placeholderTextColor="#888"
-        value={searchQuery}
-        onChangeText={setSearchQuery}
-      />
-
-      {/* Logo */}
       <Image
+        style={styles.logo}
         source={require('@/assets/images/WTM-Logo.png')}
-        style={styles.WTMLogo}
       />
 
-      {/* Title */}
-      <Text style={styles.text}>Top Rated:</Text>
+      <div style={styles.searchContainer}>
+      <TextInput
+        style={styles.input}
+        placeholder='Search by address'
+        placeholderTextColor="#999"
+        value={search}
+        onChangeText={setSearch}      
+      />
+      <TouchableOpacity
+        style={styles.searchButton}
+        onPress={handleAddressSearch}
+        >
+          <Text style={styles.buttonText}>Search</Text>
+      </TouchableOpacity>
+      </div>
 
-      {/* Images and Text */}
-      <View style={styles.imageContainer}>
-        <ImageViewer imgSource={PlaceholderImage1} />
-        <Text style={styles.textBox}>On The Rox</Text>
-      </View>
-
-      <View style={styles.imageContainer}>
-        <ImageViewer imgSource={PlaceholderImage2} />
-        <Text style={styles.textBox1}>Mate Bar</Text>
-      </View>
-
-      <View style={styles.imageContainer}>
-        <ImageViewer imgSource={PlaceholderImage3} />
-        <Text style={styles.textBox2}>Ice Club</Text>
-      </View>
+      <Text style={styles.or}>or</Text>
+      <TouchableOpacity
+        style={styles.locationButton}
+        onPress={handleLocationSearch}
+        >
+          <Text style={styles.buttonText}>Use your location</Text>
+      </TouchableOpacity>
+      
     </View>
   );
 }
@@ -51,78 +57,62 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#000000',
+    backgroundColor: '#000',
     alignItems: 'center',
     justifyContent: 'center',
+    paddingHorizontal: 20,
   },
-  searchBar: {
-    width: 320,
-    height: 40,
-    backgroundColor: '#fff',
-    borderRadius: 10,
-    paddingHorizontal: 15,
-    marginVertical: 70,          //brought down search bar
-    color: 'black',
-    position: 'absolute',  // Keeps it at the top
-    top: 60,
+  logo: {
+    height: 200,
+    width: 400,
+    marginBottom: 40,
+    resizeMode: 'contain'
   },
-  WTMLogo: {
-    height: 78,
-    width: 190,
-    bottom: 720,
-    left: -50,
-    position: 'absolute',
+  
+  searchContainer: {
+    width:'75%',
+    display: 'flex',
   },
-  text: {
-    paddingTop: 30,
-    left: 0,
-    bottom: -60,
-    fontSize: 24,
+
+  input: {
+    width: '100%',
+    padding: 15,
+    marginBottom: 20,
+    marginRight:5,
+    borderRadius: 999,
+    backgroundColor: '#333',
     color: '#fff',
+    fontSize: 16,
   },
-  imageContainer: {
-    flex: 0.25,
-    bottom: 100,
+  searchButton: {
+    width: '25%',
+    padding: 15,
+    marginBottom:20,
+    borderRadius: 25,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#333',
   },
-  image: {
-    width: 320,
-    height: 440,
-    borderRadius: 18,
+  or: {
+    fontSize: 18,
+    color: '#fff',
+    marginBottom: 20,
   },
-  textBox: {
-    position: 'absolute',
-    fontSize: 20,
-    color: 'white',
-    top: 270,
-    left: 90,
-    backgroundColor: 'black',
-    borderRadius: 23,
-    width: 180,
-    height: 25,
-    textAlign: 'center',
+  locationButton: {
+    width: '75%',
+    padding: 15,
+    borderRadius: 25,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#6200EE',
+    marginBottom: 10,
   },
-  textBox1: {
-    position: 'absolute',
-    fontSize: 20,
-    color: 'white',
-    top: 270,
-    left: 90,
-    backgroundColor: 'black',
-    borderRadius: 23,
-    width: 180,
-    height: 25,
-    textAlign: 'center',
+  buttonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
-  textBox2: {
-    position: 'absolute',
-    fontSize: 20,
-    color: 'white',
-    top: 270,
-    left: 90,
-    backgroundColor: 'black',
-    borderRadius: 23,
-    width: 180,
-    height: 25,
-    textAlign: 'center',
-  },
+  
+
+
 });

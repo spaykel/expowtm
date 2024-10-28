@@ -1,13 +1,18 @@
 import { Image, View, StyleSheet, TextInput, TouchableOpacity, Text } from 'react-native';
 import React, { useState } from 'react';
+import { useRouter } from 'expo-router';
 
 export default function Login() {
+  const router = useRouter(); // Import the router hook
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
   const handleLogin = () => {
     console.log('Email:', email);
     console.log('Password:', password);
+
+    // Navigate to the home screen
+    router.push('/'); // This navigates to the root screen, typically the Home screen
   };
 
   const handleSignUp = () => {
@@ -62,16 +67,16 @@ const styles = StyleSheet.create({
       paddingHorizontal: 20,
     },
     logo: {
-      height: 200, // Increase height
-      width: 400,  // Increase width
-      marginBottom: 40, // Space below the logo
-      resizeMode: 'contain', // Keep the logo's aspect ratio
+      height: 200,
+      width: 400,
+      marginBottom: 40,
+      resizeMode: 'contain',
     },
     title: {
       fontSize: 28,
       color: '#fff',
       marginBottom: 20,
-      fontFamily: 'Roboto', // or any custom font you prefer
+      fontFamily: 'Roboto',
       textTransform: 'uppercase',
       letterSpacing: 2,
       textShadowColor: 'rgba(0, 0, 0, 0.3)',
@@ -112,4 +117,3 @@ const styles = StyleSheet.create({
       fontWeight: 'bold',
     },
   });
-  

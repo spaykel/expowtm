@@ -2,7 +2,6 @@ import { Tabs } from 'expo-router';
 import React from 'react';
 import Entypo from '@expo/vector-icons/Entypo';
 import { TabBarIcon } from '@/components/navigation/TabBarIcon';
-import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
 
 export default function TabLayout() {
@@ -15,8 +14,9 @@ export default function TabLayout() {
         headerShown: false,
         tabBarStyle: {
           backgroundColor: '#000000',
-        }
-      }}>
+        },
+      }}
+    >
       <Tabs.Screen
         name="index"
         options={{
@@ -36,7 +36,7 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="customizeProfile"
+        name="customize"
         options={{
           title: 'Customize Profile',
           tabBarIcon: ({ color, focused }) => (
@@ -45,11 +45,11 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="login"
+        name="settings"
         options={{
-          title: 'Login',
+          title: 'Settings',
           tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name={focused ? 'log-in' : 'log-in-outline'} color={color} />
+            <TabBarIcon name={focused ? 'settings' : 'settings-outline'} color={color} />
           ),
         }}
       />

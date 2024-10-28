@@ -11,7 +11,7 @@ import {useState} from 'react';
 type CustomizeProfileScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Customize'>;
 
 
-// change these later
+// change these later when you do backend coding
 let name = "John Doe";
 let age = 20;
 let numBarsVisited = 50;

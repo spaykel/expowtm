@@ -1,8 +1,10 @@
-import React from 'react';
+
+import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, Image, StyleSheet } from 'react-native';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 
 const barProfile = () => {
+  const [starRating, setStarRating] = useState(0);
   return (
     <View style={styles.container}>
       <TouchableOpacity style={styles.backButton}>
@@ -11,20 +13,37 @@ const barProfile = () => {
       <Text style={styles.barName}>
         On The Rox
       </Text>
+      {/*image of bar clicked*/}
       <Image
         style={styles.image}
         source={require('@/assets/images/ontherox.png')}
       />
+        <View style={styles.filledStars}>
       <Text style={styles.text}>
-        Give a Rating
+      {starRating ? `${starRating}` : 'Give A Rating'}
       </Text>
+      {starRating ? (
+        <MaterialIcons name="star" size={20} color="#FFD700" style={{paddingTop:14}} />
+      ) : null}
+          </View>
 
+      {/*updating star rating'*/}
       <View style={styles.stars}>
+        <TouchableOpacity onPress={() => setStarRating(1)}>
         <MaterialIcons name ="star-border" size={30} style={styles.starUnselected}></MaterialIcons>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => setStarRating(2)}>
         <MaterialIcons name ="star-border" size={30} style={styles.starUnselected}></MaterialIcons>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => setStarRating(3)}>
         <MaterialIcons name ="star-border" size={30} style={styles.starUnselected}></MaterialIcons>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => setStarRating(4)}>
         <MaterialIcons name ="star-border" size={30} style={styles.starUnselected}></MaterialIcons>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => setStarRating(5)}>
         <MaterialIcons name ="star-border" size={30} style={styles.starUnselected}></MaterialIcons>
+        </TouchableOpacity>
       </View>
 
       <View style={styles.buttonContainer}>
@@ -72,11 +91,17 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     fontSize: 30,
   },
+  filledStars: {
+    flex: 0.1,
+    display: 'flex',
+    flexDirection: 'row',
+    fontSize: 30,
+  },
   button: {
     backgroundColor: '#6200EE',
     padding: 12,
     borderRadius: 8,
-    width: '45%',
+    width: '75%',
     alignItems: 'center',
   },
   buttonText: {
@@ -89,6 +114,7 @@ const styles = StyleSheet.create({
   text: {
     color: '#aaa',
     paddingTop: 10,
+    fontSize: 20,
   },
   barName: {
     color: '#aaa',

@@ -1,15 +1,9 @@
-import {View, Text, TextInput, StyleSheet, Image, Platform, TouchableOpacity } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-import { StackNavigationProp } from '@react-navigation/stack';
-import { RootStackParamList } from '../extraScreens';
+import {View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
 
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import {useState} from 'react';
-
-
-type CustomizeProfileScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Customize'>;
-
+import { useRouter } from 'expo-router';
 
 // change these later when you do backend coding
 let name = "John Doe";
@@ -18,22 +12,21 @@ let numBarsVisited = 50;
 
 export default function TabTwoScreen() {
 
-  const navigation = useNavigation<CustomizeProfileScreenNavigationProp>();
+  const router = useRouter();
 
   const [pastReviewsNReview, setPastReviews] = useState('');
   const [pastRatings, setPastRatings] = useState('');
   const [friends, setFriends] = useState('');
 
-  const handlePastReviews = () => {
-    console.log('Past Reviews:', pastReviewsNReview);
-    navigation.navigate('PastReviews');
+  const navigateToPastReviews = () => {
+    router.push('../(stack)/pastReviews');
   };
-  const handlePastRatings = () => {
-    console.log('Past Ratings:', pastRatings);
+  const navigateToPastRatings = () => {
+    router.push('../(stack)/pastRatings');
   };
 
-  const handleFriends = () => {
-    console.log('Friends:', friends);
+  const navigateToFriends = () => {
+    router.push('../(stack)/friends');
   };
 
   return (
@@ -49,17 +42,17 @@ export default function TabTwoScreen() {
       <ThemedText>Age: {age}{'\n'}</ThemedText>
       
       {/* Past Reviews button */}
-      <TouchableOpacity style={styles.button} onPress={handlePastReviews}>
+      <TouchableOpacity style={styles.button} onPress={navigateToPastReviews}>
         <Text style={styles.buttonText}>Past Reviews</Text>
       </TouchableOpacity>
       
       {/* Past Ratings button */}
-      <TouchableOpacity style={[styles.button, styles.pastRatingsButton]} onPress={handlePastRatings}>
+      <TouchableOpacity style={[styles.button, styles.pastRatingsButton]} onPress={navigateToPastRatings}>
         <Text style={styles.buttonText}>Past Ratings</Text>
       </TouchableOpacity>
 
       {/* Friends button */}
-      <TouchableOpacity style={[styles.button, styles.pastRatingsButton]} onPress={handleFriends}>
+      <TouchableOpacity style={[styles.button, styles.pastRatingsButton]} onPress={navigateToFriends}>
         <Text style={styles.buttonText}>Friends</Text>
       </TouchableOpacity>
       
@@ -79,6 +72,7 @@ const styles = StyleSheet.create({
   titleContainer: {
     flexDirection: 'row',
     gap: 8,
+    backgroundColor: 'rgba(0,0,0,0)',
   },
   input: {
     width: '100%',

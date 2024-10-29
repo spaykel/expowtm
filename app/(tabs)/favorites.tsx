@@ -1,4 +1,4 @@
-import { Image, View, StyleSheet, Platform, Text} from 'react-native';
+import { Image, View, StyleSheet, Platform, Alert, Text, TouchableOpacity} from 'react-native';
 import ImageViewer from "@/components/imageView";
 
 const PlaceholderImage1 = require('@/assets/images/ontherox.png');
@@ -16,11 +16,15 @@ export default function favorites() {
         />
         <Text style={styles.text}>Favorites</Text> 
         <View style={styles.imageContainer}>
-            <ImageViewer imgSource={PlaceholderImage1} />     
+          <TouchableOpacity onPress={()=> {Alert.alert('On the Rox Roxxss')}}>
+            <ImageViewer imgSource={PlaceholderImage1} /> 
+            </TouchableOpacity>
             <Text style={styles.textBox}>Closes: 2:00</Text>
         </View> 
         <View style={styles.imageContainer}>
+          <TouchableOpacity onPress={()=> {Alert.alert('Matebar is clicked')}}>
             <ImageViewer imgSource={PlaceholderImage2} />
+            </TouchableOpacity>
             <Text style={styles.textBox1}>Closes: 1:30</Text>
         </View> 
         <View style={styles.imageContainer}>
@@ -101,5 +105,6 @@ const styles = StyleSheet.create({
     width: 180,
     height: 25,
     textAlign: 'center',
-  }
+  },
+  
 });

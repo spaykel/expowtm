@@ -1,34 +1,48 @@
-import { Image, View, StyleSheet, Platform, Text} from 'react-native';
+import { Image, View, StyleSheet, Text, TouchableOpacity } from 'react-native';
+import { useRouter } from 'expo-router';
 import ImageViewer from "@/components/imageView";
 
 const PlaceholderImage1 = require('@/assets/images/ontherox.png');
-const PlaceholderImage2 = require('@/assets/images/Mate-bare.jpg');  //images
+const PlaceholderImage2 = require('@/assets/images/Mate-bare.jpg');
 const PlaceholderImage3 = require('@/assets/images/ice-bar.jpg');
 
+export default function Favorites() {
+  const router = useRouter();
 
-export default function favorites() {
+  const navigateToBarProfile = (barName: string) => {
+    // Navigate to the bar profile screen with optional parameters if needed
+    router.push('/barProfile');
+  };
+
   return (
-    
     <View style={styles.container}>
-        <Image
-          source={require('@/assets/images/WTM-Logo.png')}
-          style={styles.WTMLogo}
-        />
-        <Text style={styles.text}>Favorites</Text> 
-        <View style={styles.imageContainer}>
-            <ImageViewer imgSource={PlaceholderImage1} />     
-            <Text style={styles.textBox}>Closes: 2:00</Text>
-        </View> 
-        <View style={styles.imageContainer}>
-            <ImageViewer imgSource={PlaceholderImage2} />
-            <Text style={styles.textBox1}>Closes: 1:30</Text>
-        </View> 
-        <View style={styles.imageContainer}>
-            <ImageViewer imgSource={PlaceholderImage3} />
-            <Text style={styles.textBox2}>Closes: 1:30</Text>
-        </View> 
-  </View>
-   
+      <Image source={require('@/assets/images/WTM-Logo.png')} style={styles.WTMLogo} />
+      <Text style={styles.text}>Favorites</Text>
+
+      {/* On the Rox Image */}
+      <View style={styles.imageContainer}>
+        <TouchableOpacity onPress={() => navigateToBarProfile('On the Rox')}>
+          <ImageViewer imgSource={PlaceholderImage1} /> 
+        </TouchableOpacity>
+        <Text style={styles.textBox}>Closes: 2:00</Text>
+      </View> 
+
+      {/* Matebar Image */}
+      <View style={styles.imageContainer}>
+        <TouchableOpacity onPress={() => navigateToBarProfile('Matebar')}>
+          <ImageViewer imgSource={PlaceholderImage2} />
+        </TouchableOpacity>
+        <Text style={styles.textBox1}>Closes: 1:30</Text>
+      </View> 
+
+      {/* Ice Bar Image */}
+      <View style={styles.imageContainer}>
+        <TouchableOpacity onPress={() => navigateToBarProfile('Ice Bar')}>
+          <ImageViewer imgSource={PlaceholderImage3} />
+        </TouchableOpacity>
+        <Text style={styles.textBox2}>Closes: 1:30</Text>
+      </View>
+    </View>
   );
 }
 
@@ -51,7 +65,7 @@ const styles = StyleSheet.create({
     left: -50,
     position: 'absolute',
   },
-  container:{
+  container: {
     flex: 1,
     backgroundColor: '#000000',
     alignItems: 'center',
@@ -60,46 +74,46 @@ const styles = StyleSheet.create({
   imageContainer: {
     flex: 0.25,
     bottom: 150
-    },
-    image: {
+  },
+  image: {
     width: 320,
     height: 440,
     borderRadius: 18,
-    },
+  },
   textBox: {
-    position: 'absolute', 
-    fontSize: 20, 
-    color: 'white', 
-    top: 270,                          //textbox are within the image container and have a black background
-    left: 10, 
-    backgroundColor: 'black', 
+    position: 'absolute',
+    fontSize: 20,
+    color: 'white',
+    top: 270,
+    left: 10,
+    backgroundColor: 'black',
     borderRadius: 23,
     width: 180,
     height: 25,
     textAlign: 'center',
   },
   textBox1: {
-    position: 'absolute', 
-    fontSize: 20, 
-    color: 'white', 
-    top: 270, 
-    left: 10, 
-    backgroundColor: 'black', 
+    position: 'absolute',
+    fontSize: 20,
+    color: 'white',
+    top: 270,
+    left: 10,
+    backgroundColor: 'black',
     borderRadius: 23,
     width: 180,
     height: 25,
     textAlign: 'center',
   },
   textBox2: {
-    position: 'absolute', 
-    fontSize: 20, 
-    color: 'white', 
-    top: 270, 
-    left: 10, 
-    backgroundColor: 'black', 
+    position: 'absolute',
+    fontSize: 20,
+    color: 'white',
+    top: 270,
+    left: 10,
+    backgroundColor: 'black',
     borderRadius: 23,
     width: 180,
     height: 25,
     textAlign: 'center',
-  }
+  },
 });

@@ -6,9 +6,11 @@ const barProfile = () => {
   return (
     <View style={styles.container}>
       <TouchableOpacity style={styles.backButton}>
-        <Ionicons name="arrow-back" size={20} color="black" />
+        <Ionicons name="arrow-back" size={24} color="white" />
       </TouchableOpacity>
-
+      <Text style={styles.barName}>
+        On The Rox
+      </Text>
       <Image
         style={styles.image}
         source={require('@/assets/images/ontherox.png')}
@@ -16,7 +18,7 @@ const barProfile = () => {
       <Text style={styles.text}>
         Give a Rating
       </Text>
-      
+
       <View style={styles.stars}>
         <MaterialIcons name ="star-border" size={30} style={styles.starUnselected}></MaterialIcons>
         <MaterialIcons name ="star-border" size={30} style={styles.starUnselected}></MaterialIcons>
@@ -47,7 +49,7 @@ const styles = StyleSheet.create({
   },
   backButton: {
     position: 'absolute',
-    top: 20,
+    top: 35,
     left: 20,
   },
   image: {
@@ -87,6 +89,12 @@ const styles = StyleSheet.create({
   text: {
     color: '#aaa',
     paddingTop: 10,
+  },
+  barName: {
+    color: '#aaa',
+    paddingTop: 10,
+    fontSize: 40,
+    alignItems: 'center',
   },
 });
 

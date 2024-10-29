@@ -14,7 +14,7 @@ export default function RootLayout() {
     SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
   });
 
-  // New: State to check if the user is authenticated
+  // State to check if the user is authenticated
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
@@ -33,12 +33,12 @@ export default function RootLayout() {
 
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
+      <Stack screenOptions={{ headerShown: false }}>
         {/* Conditionally render Login or Tabs based on authentication */}
         {isAuthenticated ? (
-          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+          <Stack.Screen name="(tabs)" />
         ) : (
-          <Stack.Screen name="login" options={{ headerShown: false }} />
+          <Stack.Screen name="login" />
         )}
         <Stack.Screen name="+not-found" />
       </Stack>

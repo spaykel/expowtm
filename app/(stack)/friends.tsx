@@ -13,6 +13,7 @@ const PastReviewsScreen: React.FC = () => {
           <ThemedText type="title">Friends{'\n'}</ThemedText>
         </View>
       </ThemedView>
+      <ThemedText>{'\n'} Your Friends: </ThemedText> 
       <ThemedText>{'\n'} Miguel </ThemedText> 
       <ThemedText>{'\n'} Sammy </ThemedText> 
       <ThemedText>{'\n'} Nick </ThemedText> 

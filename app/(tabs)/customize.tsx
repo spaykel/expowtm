@@ -31,6 +31,10 @@ export default function TabTwoScreen() {
 
   return (
     <View style={styles.container}>
+     {/* <Image
+        style={styles.logo}
+        source={require('@/assets/images/WTM-Logo.png')}
+      /> */}
       <ThemedView style={styles.titleContainer}>
         {/* need to change this to actually be centered and not have the spaces */}
         <View style={styles.centered}>
@@ -102,6 +106,19 @@ const styles = StyleSheet.create({
   },
   pastRatingsButton: {
     backgroundColor: '#888',
-  },
+  },  
+  // logo: {
+  //   height: 200,
+  //   width: 400,
+  //   // marginBottom: 0,
+  //   resizeMode: 'contain'
+  // },
+  // WTMLogo: {
+  //   height: 30,
+  //   width: 190,
+  //   bottom: 720,
+  //   left: -50,
+  //   position: 'absolute',
+  // },
 
 });

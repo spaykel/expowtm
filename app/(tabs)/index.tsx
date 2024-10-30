@@ -82,10 +82,12 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 25,
     borderBottomLeftRadius: 25,
     backgroundColor: '#333',
+    height:60,
     color: '#fff',
     fontSize: 16,
   },
   searchButton: {
+    height:60,
     padding: 15,
     borderTopRightRadius: 25,
     borderBottomRightRadius: 25,
@@ -99,6 +101,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   locationButton: {
+    height:60,
     width: '75%',
     padding: 15,
     borderRadius: 25,

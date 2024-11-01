@@ -5,10 +5,7 @@ import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
 
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { useNavigation } from '@react-navigation/native';
-import { RouteProp, useRoute } from '@react-navigation/native';
-
-
+import {useNavigation } from '@react-navigation/native';
 
 type Bar = {
   id: number;
@@ -48,8 +45,8 @@ const BarListScreen: React.FC = () => {
 
       <ScrollView contentContainerStyle={styles.barList} showsVerticalScrollIndicator={false}>
         {
-        bars.map((item, index) => (
-          <TouchableOpacity key={index} style={styles.barItem}>
+        bars.map((item) => (
+          <TouchableOpacity key={item.id} style={styles.barItem}>
             <View style={styles.barInfoContainer}>
             <Text style={styles.name}>{item.name}</Text>
             <Text style={styles.address}>Address: {item.address}</Text>

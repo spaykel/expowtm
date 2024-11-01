@@ -1,14 +1,8 @@
-import { Image, View, StyleSheet, Platform, Text, TextInput, TouchableOpacity } from 'react-native';
+import { Image, View, StyleSheet, Text, TextInput, TouchableOpacity } from 'react-native';
 import { useState } from 'react';
-import ImageViewer from "@/components/imageView";
-import { SearchBar } from 'react-native-screens';
 import { useRouter } from 'expo-router';
 
-
 const router = useRouter();
-const PlaceholderImage1 = require('@/assets/images/ontherox.png');
-const PlaceholderImage2 = require('@/assets/images/Mate-bare.jpg');  //images
-const PlaceholderImage3 = require('@/assets/images/ice-bar.jpg');
 
 export default function HomeScreen() {
   const[search,setSearch] = useState('');

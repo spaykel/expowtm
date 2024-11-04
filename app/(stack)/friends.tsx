@@ -19,25 +19,11 @@ const PastReviewsScreen: React.FC = () => {
   };
 
   return (
-<<<<<<< HEAD
-    <View style={styles.container}>
-      <ThemedView style={styles.titleContainer}>
-        {/* need to change this to actually be centered and not have the spaces */}
-        <View style={styles.centered}>
-          <ThemedText type="title">Friends{'\n'}</ThemedText>
-        </View>
-      </ThemedView>
-      <ThemedText>{'\n'} Your Friends: </ThemedText> 
-      <ThemedText>{'\n'} Miguel </ThemedText> 
-      <ThemedText>{'\n'} Sammy </ThemedText> 
-      <ThemedText>{'\n'} Nick </ThemedText> 
-=======
     <ThemedView style={styles.container}>
       {/* Back Button */}
       <TouchableOpacity style={styles.backButton} onPress={handleBackPress}>
         <Ionicons name="arrow-back" size={24} color="#ffffff" />
       </TouchableOpacity>
->>>>>>> 3e9566b672bf230e67753506440cf895d0af2798
 
       <View style={styles.titleContainer}>
         <ThemedText type="title" style={styles.titleText}>Friends</ThemedText>

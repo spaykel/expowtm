@@ -2,6 +2,7 @@ import {View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
 
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
+import * as ImagePicker from 'expo-image-picker';
 import {useState} from 'react';
 import { useRouter } from 'expo-router';
 
@@ -14,34 +15,51 @@ export default function TabTwoScreen() {
 
   const router = useRouter();
 
-  const [pastReviewsNReview, setPastReviews] = useState('');
-  const [pastRatings, setPastRatings] = useState('');
-  const [friends, setFriends] = useState('');
+  const [imageSrc, setImageSrc] = useState('@/assets/images/braver-blank-pfp_new.jpg'); // Default profile picture
 
-  const navigateToPastReviews = () => {
-    router.push('../(stack)/pastReviews');
-  };
-  const navigateToPastRatings = () => {
-    router.push('../(stack)/pastRatings');
+  const handleImageChange = async () => {
+    // Request permission to access images
+    const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (!permissionResult.granted) {
+      alert("Permission to access camera roll is required!");
+      return;
+    }
+
+    // Launch the image picker
+    const pickerResult = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [1, 1], // Square aspect ratio
+      quality: 1,
+    });
+
+    if (!pickerResult.canceled && pickerResult.assets && pickerResult.assets.length > 0) {
+      setImageSrc(pickerResult.assets[0].uri); // Get the URI of the selected image
+    }
   };
 
-  const navigateToFriends = () => {
-    router.push('../(stack)/friends');
-  };
+  const navigateToPastReviews = () => router.push('../(stack)/pastReviews');
+  const navigateToPastRatings = () => router.push('../(stack)/pastRatings');
+  const navigateToFriends = () => router.push('../(stack)/friends');
 
   return (
     <View style={styles.container}>
-     {/* <Image
-        style={styles.logo}
-        source={require('@/assets/images/WTM-Logo.png')}
-      /> */}
       <ThemedView style={styles.titleContainer}>
         {/* need to change this to actually be centered and not have the spaces */}
         <View style={styles.centered}>
           <ThemedText type="title">Customize Profile{'\n'}</ThemedText>
         </View>
       </ThemedView>
-      <Image source={require('@/assets/images/braver-blank-pfp_new.jpg')} style={{ alignSelf: 'center' }} />
+      {/* <Image source={require('@/assets/images/braver-blank-pfp_new.jpg')} style={{ alignSelf: 'center' }} /> */}
+      {/* going to change image on click here */}
+            {/* Profile Picture */}
+            <TouchableOpacity onPress={handleImageChange}>
+        <Image
+          source={imageSrc ? { uri: imageSrc } : require('@/assets/images/braver-blank-pfp_new.jpg')}
+          style={styles.profileImage}
+        />
+      </TouchableOpacity>
+
       <ThemedText>{'\n'} Name: {name} </ThemedText> 
       <ThemedText>Age: {age}{'\n'}</ThemedText>
       
@@ -90,6 +108,12 @@ const styles = StyleSheet.create({
   centered: {
     alignItems: 'center',
   },
+  profileImage: {
+    width: 150,
+    height: 150,
+    borderRadius: 75,
+    marginBottom: 20,
+  },
   button: {
     width: '75%',
     padding: 15,
@@ -107,18 +131,4 @@ const styles = StyleSheet.create({
   pastRatingsButton: {
     backgroundColor: '#888',
   },  
-  // logo: {
-  //   height: 200,
-  //   width: 400,
-  //   // marginBottom: 0,
-  //   resizeMode: 'contain'
-  // },
-  // WTMLogo: {
-  //   height: 30,
-  //   width: 190,
-  //   bottom: 720,
-  //   left: -50,
-  //   position: 'absolute',
-  // },
-
 });

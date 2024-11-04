@@ -64,7 +64,7 @@ export default function TabTwoScreen() {
       <ThemedText>Age: {age}{'\n'}</ThemedText>
       
       {/* Past Reviews button */}
-      <TouchableOpacity style={styles.button} onPress={navigateToPastReviews}>
+      <TouchableOpacity style={[styles.button, styles.pastRatingsButton]} onPress={navigateToPastReviews}>
         <Text style={styles.buttonText}>Past Reviews</Text>
       </TouchableOpacity>
       
@@ -129,6 +129,6 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   pastRatingsButton: {
-    backgroundColor: '#888',
+    backgroundColor: '#6200EE',
   },  
 });

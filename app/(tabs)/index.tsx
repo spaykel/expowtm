@@ -1,21 +1,22 @@
-import { Image, View, StyleSheet, Platform, Text, TextInput, TouchableOpacity } from 'react-native';
+import { Image, View, StyleSheet, Text, TextInput, TouchableOpacity } from 'react-native';
 import { useState } from 'react';
-import ImageViewer from "@/components/imageView";
-import { SearchBar } from 'react-native-screens';
+import { useRouter } from 'expo-router';
 
-const PlaceholderImage1 = require('@/assets/images/ontherox.png');
-const PlaceholderImage2 = require('@/assets/images/Mate-bare.jpg');  //images
-const PlaceholderImage3 = require('@/assets/images/ice-bar.jpg');
+const router = useRouter();
 
 export default function HomeScreen() {
   const[search,setSearch] = useState('');
 
   const handleLocationSearch = () =>{
     console.log('(Placeholder message) request search by location')
+    router.push({ pathname: '../(stack)/barList' });
   }
 
   const handleAddressSearch = () =>{
     console.log('Searching with address: ',search);
+    router.push({ 
+      pathname: '../(stack)/barList', 
+    });
   }
 
 

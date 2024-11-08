@@ -1,13 +1,17 @@
 import React from 'react';
-import { View, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import { View, StyleSheet, ScrollView, TouchableOpacity, Text } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import Ionicons from '@expo/vector-icons/Ionicons';
+import { useRouter } from 'expo-router';
+
 
 const PastReviewsScreen: React.FC = () => {
   const navigation = useNavigation();
+  const router = useRouter();
+
 
   const handleBackPress = () => {
     navigation.goBack();
@@ -17,6 +21,8 @@ const PastReviewsScreen: React.FC = () => {
     // Navigate to the friend’s profile or another screen, passing the friend's name as a parameter
     navigation.navigate('FriendProfile', { friendName: friend });
   };
+
+  const navigateToAddFriends = () => router.push('../(stack)/addFriends');
 
   return (
     <ThemedView style={styles.container}>
@@ -37,6 +43,13 @@ const PastReviewsScreen: React.FC = () => {
             <ThemedText type="default" style={styles.friendText}>{friend}</ThemedText>
           </TouchableOpacity>
         ))}
+      
+      
+      {/* Add Friends Button */}    
+      <ThemedText>{'\n'}</ThemedText>
+        <TouchableOpacity style={[styles.button, styles.pastRatingsButton]} onPress={navigateToAddFriends}>
+        <Text style={styles.buttonText}>Add Friend</Text>
+      </TouchableOpacity>
       </ScrollView>
     </ThemedView>
   );
@@ -90,6 +103,23 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: '#ffffff', // Light text color for dark mode
   },
+  buttonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  button: {
+    width: '75%',
+    padding: 15,
+    borderRadius: 25,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#888',
+    marginBottom: 10,
+  },
+  pastRatingsButton: {
+    backgroundColor: '#6200EE',
+  },  
 });
 
 export default PastReviewsScreen;

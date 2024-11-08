@@ -47,7 +47,7 @@ export default function TabTwoScreen() {
       <ThemedView style={styles.titleContainer}>
         {/* need to change this to actually be centered and not have the spaces */}
         <View style={styles.centered}>
-          <ThemedText type="title">Customize Profile{'\n'}</ThemedText>
+          <ThemedText type="title">John Doe's Profile{'\n'}</ThemedText>
         </View>
       </ThemedView>
       {/* <Image source={require('@/assets/images/braver-blank-pfp_new.jpg')} style={{ alignSelf: 'center' }} /> */}

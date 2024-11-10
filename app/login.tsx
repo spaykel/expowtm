@@ -3,13 +3,11 @@ import React, { useState } from 'react';
 import { useRouter } from 'expo-router';
 
 export default function Login() {
-  // Place hooks directly inside the component, not inside any function
   const router = useRouter(); 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  // Use your computer's IP address instead of localhost
-  const backendUrl = 'http://192.168.1.219:8080'; // replace with your IP address and backend port
+  const backendUrl = 'https://192.168.1.219:8080'; 
 
   // Define your API requests inside the handleLogin function
   const handleLogin = async () => {

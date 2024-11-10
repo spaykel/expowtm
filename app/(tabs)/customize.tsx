@@ -6,7 +6,14 @@ import * as ImagePicker from 'expo-image-picker';
 import {useState} from 'react';
 import { useRouter } from 'expo-router';
 
+/* TO DO:
+  need to make the users account information appear after they sign in (username, name, age)
+  going to need a counter for how many bars we have visited
+  going to need a counter for how many bars we have visited
+*/
+
 // change these later when you do backend coding
+let username = "john_doe_007"
 let name = "John Doe";
 let age = 20;
 let numBarsVisited = 50;
@@ -15,7 +22,9 @@ export default function TabTwoScreen() {
 
   const router = useRouter();
 
-  const [imageSrc, setImageSrc] = useState('@/assets/images/braver-blank-pfp_new.jpg'); // Default profile picture
+  // const [imageSrc, setImageSrc] = useState(null); // Default profile picture
+  const [imageSrc, setImageSrc] = useState<string | null>(null); // Specify type as string | null
+
 
   const handleImageChange = async () => {
     // Request permission to access images
@@ -38,6 +47,7 @@ export default function TabTwoScreen() {
     }
   };
 
+  // naviagation for the buttons
   const navigateToPastReviews = () => router.push('../(stack)/pastReviews');
   const navigateToPastRatings = () => router.push('../(stack)/pastRatings');
   const navigateToFriends = () => router.push('../(stack)/friends');
@@ -47,7 +57,7 @@ export default function TabTwoScreen() {
       <ThemedView style={styles.titleContainer}>
         {/* need to change this to actually be centered and not have the spaces */}
         <View style={styles.centered}>
-          <ThemedText type="title">John Doe's Profile{'\n'}</ThemedText>
+          <ThemedText type="title">{username}{'\n'}</ThemedText>
         </View>
       </ThemedView>
       {/* <Image source={require('@/assets/images/braver-blank-pfp_new.jpg')} style={{ alignSelf: 'center' }} /> */}
@@ -60,7 +70,8 @@ export default function TabTwoScreen() {
         />
       </TouchableOpacity>
 
-      <ThemedText>{'\n'} Name: {name} </ThemedText> 
+      {/* Going to need to change these when the backend connects */}
+      <ThemedText>{'\n'}Name: {name}</ThemedText> 
       <ThemedText>Age: {age}{'\n'}</ThemedText>
       
       {/* Past Reviews button */}
@@ -78,6 +89,7 @@ export default function TabTwoScreen() {
         <Text style={styles.buttonText}>Friends</Text>
       </TouchableOpacity>
       
+      {/* Going to also need to change this when we get the back end running */}
       <ThemedText>{'\n'}You have visited {numBarsVisited} Bars!!{'\n'}</ThemedText>
 
     </View>

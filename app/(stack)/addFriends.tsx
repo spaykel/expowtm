@@ -9,9 +9,8 @@ import { useRouter } from 'expo-router';
 
 
 /* TO DO:
-  need to make a "Search for Friends Title"
-  need a search bar
-  can make the back end for this tab later
+  need to make the back end for searching for accounts
+  when searching for accounts, we might want to make it like instagram where it shows the username and pfp
 */
 
 const AddFriendsScreen: React.FC = () => {
@@ -39,7 +38,7 @@ const AddFriendsScreen: React.FC = () => {
         <ThemedText type="title" style={styles.titleText}>Add Friends</ThemedText>
       </View>
 
-      {/* Search Bar */}
+      {/* Search for Bar */}
       <View style={styles.searchContainer}>
         <TextInput
           style={styles.input}

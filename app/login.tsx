@@ -3,16 +3,45 @@ import React, { useState } from 'react';
 import { useRouter } from 'expo-router';
 
 export default function Login() {
-  const router = useRouter(); // Import the router hook
+  // Place hooks directly inside the component, not inside any function
+  const router = useRouter(); 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const handleLogin = () => {
+  // Use your computer's IP address instead of localhost
+  const backendUrl = 'http://192.168.1.219:8080'; // replace with your IP address and backend port
+
+  // Define your API requests inside the handleLogin function
+  const handleLogin = async () => {
     console.log('Email:', email);
     console.log('Password:', password);
 
-    // Navigate to the home screen
-    router.push('/'); // This navigates to the root screen, typically the Home screen
+    // Perform the GET request to test the Spring Boot connection
+    try {
+      const greetingResponse = await fetch(`${backendUrl}/greeting`);
+      const greetingData = await greetingResponse.json();
+      console.log('Greeting Data:', greetingData);
+    } catch (error) {
+      console.error('Error in GET request:', error);
+    }
+
+    // Example of a POST request to login endpoint
+    // try {
+    //   const loginResponse = await fetch(`${backendUrl}/login`, {
+    //     method: 'POST',
+    //     headers: {
+    //       'Content-Type': 'application/json',
+    //     },
+    //     body: JSON.stringify({ email, password }),
+    //   });
+    //   const loginData = await loginResponse.json();
+    //   console.log('Login Response:', loginData);
+    // } catch (error) {
+    //   console.error('Error in POST request:', error);
+    // }
+
+    // Navigate to the home screen after login (or based on the login success)
+    router.push('/');
   };
 
   const handleSignUp = () => {
@@ -59,61 +88,61 @@ export default function Login() {
 }
 
 const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      backgroundColor: '#000',
-      alignItems: 'center',
-      justifyContent: 'center',
-      paddingHorizontal: 20,
-    },
-    logo: {
-      height: 200,
-      width: 400,
-      marginBottom: 40,
-      resizeMode: 'contain',
-    },
-    title: {
-      fontSize: 28,
-      color: '#fff',
-      marginBottom: 20,
-      fontFamily: 'Roboto',
-      textTransform: 'uppercase',
-      letterSpacing: 2,
-      textShadowColor: 'rgba(0, 0, 0, 0.3)',
-      textShadowOffset: { width: 2, height: 2 },
-      textShadowRadius: 4,
-      padding: 10,
-      borderRadius: 5,
-    },
-    input: {
-      width: '100%',
-      padding: 15,
-      marginBottom: 20,
-      borderRadius: 999,
-      backgroundColor: '#333',
-      color: '#fff',
-      fontSize: 16,
-    },
-    button: {
-      width: '75%',
-      padding: 15,
-      borderRadius: 25,
-      alignItems: 'center',
-      justifyContent: 'center',
-      backgroundColor: '#6200EE',
-      marginBottom: 10,
-    },
-    buttonText: {
-      color: '#fff',
-      fontSize: 16,
-      fontWeight: 'bold',
-    },
-    signUpButton: {
-      backgroundColor: '#888',
-    },
-    signUpButtonText: {
-      color: '#fff',
-      fontSize: 16,
-      fontWeight: 'bold',
-    },
-  });
+  container: {
+    flex: 1,
+    backgroundColor: '#000',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 20,
+  },
+  logo: {
+    height: 200,
+    width: 400,
+    marginBottom: 40,
+    resizeMode: 'contain',
+  },
+  title: {
+    fontSize: 28,
+    color: '#fff',
+    marginBottom: 20,
+    fontFamily: 'Roboto',
+    textTransform: 'uppercase',
+    letterSpacing: 2,
+    textShadowColor: 'rgba(0, 0, 0, 0.3)',
+    textShadowOffset: { width: 2, height: 2 },
+    textShadowRadius: 4,
+    padding: 10,
+    borderRadius: 5,
+  },
+  input: {
+    width: '100%',
+    padding: 15,
+    marginBottom: 20,
+    borderRadius: 999,
+    backgroundColor: '#333',
+    color: '#fff',
+    fontSize: 16,
+  },
+  button: {
+    width: '75%',
+    padding: 15,
+    borderRadius: 25,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#6200EE',
+    marginBottom: 10,
+  },
+  buttonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  signUpButton: {
+    backgroundColor: '#888',
+  },
+  signUpButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+});

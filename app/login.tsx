@@ -1,20 +1,19 @@
-import { Image, View, StyleSheet, TextInput, TouchableOpacity, Text } from 'react-native';
+import { Image, View, StyleSheet, TextInput, TouchableOpacity, Text, GestureResponderEvent } from 'react-native';
 import React, { useState } from 'react';
 import { useRouter } from 'expo-router';
 
 export default function Login() {
+  // These hooks are correctly placed at the top of the component
   const router = useRouter(); 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  
+  const backendUrl = 'http://192.168.1.219:8080'; // replace with your IP address and backend port
 
-  const backendUrl = 'https://192.168.1.219:8080'; 
-
-  // Define your API requests inside the handleLogin function
   const handleLogin = async () => {
     console.log('Email:', email);
     console.log('Password:', password);
 
-    // Perform the GET request to test the Spring Boot connection
     try {
       const greetingResponse = await fetch(`${backendUrl}/greeting`);
       const greetingData = await greetingResponse.json();
@@ -23,7 +22,6 @@ export default function Login() {
       console.error('Error in GET request:', error);
     }
 
-    // Example of a POST request to login endpoint
     // try {
     //   const loginResponse = await fetch(`${backendUrl}/login`, {
     //     method: 'POST',
@@ -38,13 +36,12 @@ export default function Login() {
     //   console.error('Error in POST request:', error);
     // }
 
-    // Navigate to the home screen after login (or based on the login success)
-    router.push('/');
+    router.push('/');  // Navigation after login
   };
 
-  const handleSignUp = () => {
-    console.log('Sign Up');
-  };
+  function handleSignUp(event: GestureResponderEvent): void {
+    throw new Error('Function not implemented.');
+  }
 
   return (
     <View style={styles.container}>
@@ -72,19 +69,16 @@ export default function Login() {
         secureTextEntry
       />
 
-      {/* Login button */}
       <TouchableOpacity style={styles.button} onPress={handleLogin}>
         <Text style={styles.buttonText}>Login</Text>
       </TouchableOpacity>
       
-      {/* Sign Up button */}
       <TouchableOpacity style={[styles.button, styles.signUpButton]} onPress={handleSignUp}>
         <Text style={styles.signUpButtonText}>Sign Up</Text>
       </TouchableOpacity>
     </View>
   );
 }
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,

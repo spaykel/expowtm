@@ -2,10 +2,18 @@ import {View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
 
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
+import * as ImagePicker from 'expo-image-picker';
 import {useState} from 'react';
 import { useRouter } from 'expo-router';
 
+/* TO DO:
+  need to make the users account information appear after they sign in (username, name, age)
+  going to need a counter for how many bars we have visited
+  going to need a counter for how many bars we have visited
+*/
+
 // change these later when you do backend coding
+let username = "john_doe_007"
 let name = "John Doe";
 let age = 20;
 let numBarsVisited = 50;
@@ -14,35 +22,50 @@ export default function TabTwoScreen() {
 
   const router = useRouter();
 
-  const [pastReviewsNReview, setPastReviews] = useState('');
-  const [pastRatings, setPastRatings] = useState('');
-  const [friends, setFriends] = useState('');
+  // const [imageSrc, setImageSrc] = useState(null); // Default profile picture
+  const [imageSrc, setImageSrc] = useState<string | null>(null); // Specify type as string | null
 
-  const navigateToPastReviews = () => {
-    router.push('../(stack)/pastReviews');
-  };
-  const navigateToPastRatings = () => {
-    router.push('../(stack)/pastRatings');
+
+  const handleImageChange = async () => {
+    // Request permission to access images
+    const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (!permissionResult.granted) {
+      alert("Permission to access camera roll is required!");
+      return;
+    }
+
+    // Launch the image picker
+    const pickerResult = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [1, 1], // Square aspect ratio
+      quality: 1,
+    });
+
+    if (!pickerResult.canceled && pickerResult.assets && pickerResult.assets.length > 0) {
+      setImageSrc(pickerResult.assets[0].uri); // Get the URI of the selected image
+    }
   };
 
-  const navigateToFriends = () => {
-    router.push('../(stack)/friends');
-  };
+  // naviagation for the buttons
+  const navigateToPastReviews = () => router.push('../(stack)/pastReviews');
+  const navigateToPastRatings = () => router.push('../(stack)/pastRatings');
+  const navigateToFriends = () => router.push('../(stack)/friends');
 
   return (
     <View style={styles.container}>
       <ThemedView style={styles.titleContainer}>
         {/* need to change this to actually be centered and not have the spaces */}
         <View style={styles.centered}>
-          <ThemedText style={styles.textColor} type="title">Customize Profile{'\n'}</ThemedText>
+          <ThemedText type="title">Customize Profile{'\n'}</ThemedText>
         </View>
       </ThemedView>
       <Image source={require('@/assets/images/braver-blank-pfp_new.jpg')} style={{ alignSelf: 'center' }} />
-      <ThemedText style={styles.textColor}>{'\n'} Name: {name} </ThemedText> 
-      <ThemedText style={styles.textColor}>Age: {age}{'\n'}</ThemedText>
+      <ThemedText>{'\n'} Name: {name} </ThemedText> 
+      <ThemedText>Age: {age}{'\n'}</ThemedText>
       
       {/* Past Reviews button */}
-      <TouchableOpacity style={styles.button} onPress={navigateToPastReviews}>
+      <TouchableOpacity style={[styles.button, styles.pastRatingsButton]} onPress={navigateToPastReviews}>
         <Text style={styles.buttonText}>Past Reviews</Text>
       </TouchableOpacity>
       
@@ -56,7 +79,7 @@ export default function TabTwoScreen() {
         <Text style={styles.buttonText}>Friends</Text>
       </TouchableOpacity>
       
-      <ThemedText style={styles.textColor}>{'\n'}You have visited {numBarsVisited} Bars!!{'\n'}</ThemedText>
+      <ThemedText>{'\n'}You have visited {numBarsVisited} Bars!!{'\n'}</ThemedText>
 
     </View>
   );
@@ -86,6 +109,12 @@ const styles = StyleSheet.create({
   centered: {
     alignItems: 'center',
   },
+  profileImage: {
+    width: 150,
+    height: 150,
+    borderRadius: 75,
+    marginBottom: 20,
+  },
   button: {
     width: '75%',
     padding: 15,
@@ -102,9 +131,6 @@ const styles = StyleSheet.create({
   },
   pastRatingsButton: {
     backgroundColor: '#888',
-  },
-  textColor: {
-    color: '#fff',
   },
 
 });

@@ -76,7 +76,6 @@ const styles = StyleSheet.create({
     alignItems: 'center', // vertically center elements
     marginBottom: 20,
   },
-
   input: {
     flex: 1, // take up remaining space in the row
     padding: 15,

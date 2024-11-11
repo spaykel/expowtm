@@ -10,9 +10,9 @@ export default function Favorites() {
   const router = useRouter();
 
   const navigateToBarProfile = (barName: string) => {
-    router.push({ pathname: '../(stack)/barProfile' });
+    // Navigate to the bar profile screen with optional parameters if needed
+    router.push('/barProfile');
   };
-  
 
   return (
     <View style={styles.container}>

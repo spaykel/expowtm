@@ -1,16 +1,9 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, Switch, ScrollView, StyleSheet } from 'react-native';
 import { Entypo, FontAwesome, MaterialIcons } from '@expo/vector-icons';
-import { useRouter } from 'expo-router';
 
 export default function SettingsScreen() {
-  const router = useRouter();
   const [isDarkMode, setIsDarkMode] = useState(false);
-
-  const handleSignOut = () => {
-    console.log("sign out");
-    router.push('/login');
-  }
 
   const toggleSwitch = () => setIsDarkMode(previousState => !previousState);
 
@@ -79,7 +72,7 @@ export default function SettingsScreen() {
         <Entypo name="chevron-right" size={24} color="#fff" />
       </TouchableOpacity>
 
-      <TouchableOpacity style={styles.signOutButton} onPress={handleSignOut}>
+      <TouchableOpacity style={styles.signOutButton}>
         <Text style={styles.signOutText}>Sign Out</Text>
       </TouchableOpacity>
     </ScrollView>

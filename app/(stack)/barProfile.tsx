@@ -1,12 +1,15 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, Image, StyleSheet, Modal, TextInput, Alert } from 'react-native';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
 
 const BarProfile: React.FC = () => {
   const [starRating, setStarRating] = useState(0);
   const [modalVisible, setModalVisible] = useState(false);
   const [busynessRating, setBusynessRating] = useState('');
   const [currentBusyness, setCurrentBusyness] = useState<number | null>(null); // State for current busyness
+  const navigation = useNavigation();
+  
 
   const handleReportBusyness = () => {
     const rating = parseInt(busynessRating);
@@ -23,7 +26,8 @@ const BarProfile: React.FC = () => {
   return (
     <View style={styles.container}>
       {/* Back button */}
-      <TouchableOpacity style={styles.backButton}>
+      
+      <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
         <Ionicons name="arrow-back" size={24} color="white" />
       </TouchableOpacity>
 

@@ -1,42 +1,47 @@
-import { Image, View, StyleSheet, TextInput, TouchableOpacity, Text, Keyboard } from 'react-native';
+import { Image, View, StyleSheet, TextInput, TouchableOpacity, Text, GestureResponderEvent } from 'react-native';
 import React, { useState } from 'react';
 import { useRouter } from 'expo-router';
-import { auth } from '../firebaseConfig';
-import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'firebase/auth';
 
 export default function Login() {
-  const router = useRouter();
+  // These hooks are correctly placed at the top of the component
+  const router = useRouter(); 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState<string>('');
+  
+  const backendUrl = 'http://192.168.1.219:8080'; // replace with your IP address and backend port
 
   const handleLogin = async () => {
-    Keyboard.dismiss();
-    setError(''); 
+    console.log('Email:', email);
+    console.log('Password:', password);
+
     try {
-      await signInWithEmailAndPassword(auth, email, password);
-      console.log('User logged in:', email);
-      router.push('/'); // Navigate to home
-    } catch (err) {
-      const errorMessage = (err as { message: string }).message;
-      console.error('Login error:', errorMessage);
-      setError(errorMessage); 
+      const greetingResponse = await fetch(`${backendUrl}/greeting`);
+      const greetingData = await greetingResponse.json();
+      console.log('Greeting Data:', greetingData);
+    } catch (error) {
+      console.error('Error in GET request:', error);
     }
+
+    // try {
+    //   const loginResponse = await fetch(`${backendUrl}/login`, {
+    //     method: 'POST',
+    //     headers: {
+    //       'Content-Type': 'application/json',
+    //     },
+    //     body: JSON.stringify({ email, password }),
+    //   });
+    //   const loginData = await loginResponse.json();
+    //   console.log('Login Response:', loginData);
+    // } catch (error) {
+    //   console.error('Error in POST request:', error);
+    // }
+
+    router.push('/');  // Navigation after login
   };
 
-  const handleSignUp = async () => {
-    Keyboard.dismiss();
-    setError(''); 
-    try {
-      await createUserWithEmailAndPassword(auth, email, password);
-      console.log('User signed up:', email);
-      router.push('/'); // Navigate to home
-    } catch (err) {
-      const errorMessage = (err as { message: string }).message;
-      console.error('Sign Up error:', errorMessage);
-      setError(errorMessage); 
-    }
-  };
+  function handleSignUp(event: GestureResponderEvent): void {
+    throw new Error('Function not implemented.');
+  }
 
   return (
     <View style={styles.container}>
@@ -45,9 +50,6 @@ export default function Login() {
         style={styles.logo}
       />
       <Text style={styles.title}>Login</Text>
-
-      {/* Error message display */}
-      {error ? <Text style={styles.error}>{error}</Text> : null}
 
       <TextInput
         style={styles.input}
@@ -77,7 +79,6 @@ export default function Login() {
     </View>
   );
 }
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -104,11 +105,6 @@ const styles = StyleSheet.create({
     textShadowRadius: 4,
     padding: 10,
     borderRadius: 5,
-  },
-  error: {
-    color: 'red',
-    marginBottom: 10,
-    textAlign: 'center',
   },
   input: {
     width: '100%',

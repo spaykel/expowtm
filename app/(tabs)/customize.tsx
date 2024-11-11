@@ -57,11 +57,21 @@ export default function TabTwoScreen() {
       <ThemedView style={styles.titleContainer}>
         {/* need to change this to actually be centered and not have the spaces */}
         <View style={styles.centered}>
-          <ThemedText type="title">Customize Profile{'\n'}</ThemedText>
+          <ThemedText type="title">{username}{'\n'}</ThemedText>
         </View>
       </ThemedView>
-      <Image source={require('@/assets/images/braver-blank-pfp_new.jpg')} style={{ alignSelf: 'center' }} />
-      <ThemedText>{'\n'} Name: {name} </ThemedText> 
+      {/* <Image source={require('@/assets/images/braver-blank-pfp_new.jpg')} style={{ alignSelf: 'center' }} /> */}
+      {/* going to change image on click here */}
+            {/* Profile Picture */}
+            <TouchableOpacity onPress={handleImageChange}>
+        <Image
+          source={imageSrc ? { uri: imageSrc } : require('@/assets/images/braver-blank-pfp_new.jpg')}
+          style={styles.profileImage}
+        />
+      </TouchableOpacity>
+
+      {/* Going to need to change these when the backend connects */}
+      <ThemedText>{'\n'}Name: {name}</ThemedText> 
       <ThemedText>Age: {age}{'\n'}</ThemedText>
       
       {/* Past Reviews button */}
@@ -79,6 +89,7 @@ export default function TabTwoScreen() {
         <Text style={styles.buttonText}>Friends</Text>
       </TouchableOpacity>
       
+      {/* Going to also need to change this when we get the back end running */}
       <ThemedText>{'\n'}You have visited {numBarsVisited} Bars!!{'\n'}</ThemedText>
 
     </View>
@@ -130,7 +141,6 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   pastRatingsButton: {
-    backgroundColor: '#888',
-  },
-
+    backgroundColor: '#6200EE',
+  },  
 });

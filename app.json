@@ -13,13 +13,18 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.whatsthemove",
+      "infoPlist": {
+        "NSLocationWhenInUseUsageDescription": "We need your location to show nearby bars."
+      }
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "permissions" : ["ACCESS_FINE_LOCATION"]
     },
     "web": {
       "bundler": "metro",

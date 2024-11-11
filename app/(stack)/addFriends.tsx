@@ -9,8 +9,9 @@ import { useRouter } from 'expo-router';
 
 
 /* TO DO:
-  need to make the back end for searching for accounts
-  when searching for accounts, we might want to make it like instagram where it shows the username and pfp
+  1. need to make the back end for searching for accounts
+  2. when searching for accounts, we might want to make it like instagram where it shows the username and pfp so that you know who you
+  are adding as a friend
 */
 
 const AddFriendsScreen: React.FC = () => {
@@ -22,7 +23,7 @@ const AddFriendsScreen: React.FC = () => {
 
   const handleAddFriendsSearch = () =>{
     console.log('Searching with address: ',search);
-    // need to change the location of the path
+    // need to change the location of the path to the users profile (actually might not want to view the profile before you add as a friend, can do this in the friends tab)
     router.push({ pathname: '/customize' });
   }
 
@@ -38,11 +39,11 @@ const AddFriendsScreen: React.FC = () => {
         <ThemedText type="title" style={styles.titleText}>Add Friends</ThemedText>
       </View>
 
-      {/* Search for Bar */}
+      {/* Search for Friend */}
       <View style={styles.searchContainer}>
         <TextInput
           style={styles.input}
-          placeholder="Search by address"
+          placeholder="Search by username"
           placeholderTextColor="#999"
           value={search}
           onChangeText={setSearch}

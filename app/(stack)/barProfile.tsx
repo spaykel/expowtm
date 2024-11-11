@@ -119,8 +119,8 @@ const styles = StyleSheet.create({
   },
   backButton: {
     position: 'absolute',
-    top: 40,
-    left: 20,
+    top: 45,
+    left: 15,
   },
   image: {
     width: '90%',
@@ -173,7 +173,7 @@ const styles = StyleSheet.create({
     color: '#FFD700',
   },
   starIcon: {
-    paddingTop: 14,
+    paddingTop: 3,
     marginLeft: 6,
   },
   text: {

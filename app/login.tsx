@@ -1,48 +1,52 @@
-import { Image, View, StyleSheet, TextInput, TouchableOpacity, Text, GestureResponderEvent } from 'react-native';
 import React, { useState } from 'react';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, GestureResponderEvent } from 'react-native';
 import { useRouter } from 'expo-router';
 
 export default function Login() {
-  // These hooks are correctly placed at the top of the component
-  const router = useRouter(); 
+  const router = useRouter();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  
-  const backendUrl = 'http://192.168.1.219:8080'; // replace with your IP address and backend port
+  const [errorMessage, setErrorMessage] = useState('');
+
+
+  const backendUrl = 'http://192.168.1.219:8080'; // Use your computer's IP address and port
 
   const handleLogin = async () => {
     console.log('Email:', email);
     console.log('Password:', password);
 
+
     try {
-      const greetingResponse = await fetch(`${backendUrl}/greeting`);
-      const greetingData = await greetingResponse.json();
-      console.log('Greeting Data:', greetingData);
+      const response = await fetch(`${backendUrl}/api/users/login`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email,
+          password,
+        }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        console.log('Login Response:', data);
+        router.push('/'); // Redirect to the home screen or dashboard
+      } else {
+        const errorData = await response.json();
+        setErrorMessage(errorData.message || 'Invalid email or password');
+        console.error('Login failed:', errorData.message);
+      }
     } catch (error) {
-      console.error('Error in GET request:', error);
+      console.error('Error during login request:', error);
+      setErrorMessage('An error occurred. Please try again.');
     }
-
-    // try {
-    //   const loginResponse = await fetch(`${backendUrl}/login`, {
-    //     method: 'POST',
-    //     headers: {
-    //       'Content-Type': 'application/json',
-    //     },
-    //     body: JSON.stringify({ email, password }),
-    //   });
-    //   const loginData = await loginResponse.json();
-    //   console.log('Login Response:', loginData);
-    // } catch (error) {
-    //   console.error('Error in POST request:', error);
-    // }
-
-    router.push('/');  // Navigation after login
   };
-
+  
   function handleSignUp(event: GestureResponderEvent): void {
     throw new Error('Function not implemented.');
   }
-
+  
   return (
     <View style={styles.container}>
       <Image

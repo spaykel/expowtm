@@ -16,10 +16,10 @@ type Bar = {
 
 //will be replaced with backend, fetching bars via API
 const bars: Bar[] = [
-  { id: 1, name: 'The Tipsy Tavern', address: '123 Main St', rating: 4.5 },
-  { id: 2, name: 'Happy Hour Lounge', address: '456 Broad Ave', rating: 4.0 },
-  { id: 3, name: 'Night Owl Pub', address: '789 Maple Rd', rating: 3.8 },
-  { id: 4, name: 'Nick\'s Place', address: '2735 Oak St', rating: 5.0 },
+  { id: 1, name: 'Mecenate Palace Hotel', address: 'Via Carlo Alberto, 3', rating: 4.2 },
+  { id: 2, name: 'Hotel d\'Inghilterra Roma\' - Starhotels Collezione', address: 'V. Bocca di Leone, 14', rating: 4.3 },
+  { id: 3, name: 'Hotel Palladium Palace', address: 'Via Gioberti, 36', rating: 4 },
+  { id: 4, name: 'Hotel Villa delle Rose', address: ' Via Vicenza, 5', rating: 3.8 },
   // Add more bars here as needed
 ];
 

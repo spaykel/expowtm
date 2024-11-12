@@ -2,10 +2,19 @@ import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, Switch, ScrollView, StyleSheet } from 'react-native';
 import { Entypo, FontAwesome, MaterialIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
+import Modal from 'react-native-modal';
+
 
 export default function SettingsScreen() {
   const router = useRouter();
   const [isDarkMode, setIsDarkMode] = useState(false);
+  const [isModalVisible, setModalVisible] = useState(false);
+  const [selectedOption, setSelectedOption] = useState<string | null>(null);
+
+  const toggleModal = (option: string | null = null) => {
+    setSelectedOption(option);
+    setModalVisible(!isModalVisible);
+  };
 
   const handleSignOut = () => {
     console.log("sign out");
@@ -13,20 +22,22 @@ export default function SettingsScreen() {
   }
 
   const toggleSwitch = () => setIsDarkMode(previousState => !previousState);
+  const navigateToAbout = () => router.push('../(stack)/about');
+
 
   return (
     <ScrollView style={styles.container}>
       <Text style={styles.title}>Settings</Text>
 
-      <TouchableOpacity style={styles.item}>
+      {/* <TouchableOpacity style={styles.item}>
         <View style={styles.iconText}>
           <FontAwesome name="user-o" size={24} color="#fff" />
           <Text style={styles.text}>Accounts</Text>
         </View>
         <Entypo name="chevron-right" size={24} color="#fff" />
-      </TouchableOpacity>
+      </TouchableOpacity> */}
 
-      <TouchableOpacity style={styles.item}>
+      <TouchableOpacity style={styles.item} onPress={() => toggleModal('Notifications')}>
         <View style={styles.iconText}>
           <FontAwesome name="bell-o" size={24} color="#fff" />
           <Text style={styles.text}>Notifications</Text>
@@ -34,7 +45,7 @@ export default function SettingsScreen() {
         <Entypo name="chevron-right" size={24} color="#fff" />
       </TouchableOpacity>
 
-      <TouchableOpacity style={styles.item}>
+      <TouchableOpacity style={styles.item}onPress={() => toggleModal('Customer Support')}>
         <View style={styles.iconText}>
           <FontAwesome name="question-circle-o" size={24} color="#fff" />
           <Text style={styles.text}>Customer Support</Text>
@@ -42,21 +53,32 @@ export default function SettingsScreen() {
         <Entypo name="chevron-right" size={24} color="#fff" />
       </TouchableOpacity>
 
-      <TouchableOpacity style={styles.item}>
+      <Modal isVisible={isModalVisible} onBackdropPress={() => toggleModal(null)} style={styles.modal}>
+        <View style={styles.popupContainer}>
+          <Text style={styles.titleTwo}>{selectedOption}</Text>
+          <Text style={styles.message}>
+            {selectedOption === 'Notifications'
+              ? 'Do you want to enable notifications?'
+              : 'Do you need help with something?'}
+          </Text>
+          <View style={styles.buttonContainer}>
+            <TouchableOpacity style={styles.button} onPress={() => toggleModal(null)}>
+              <Text style={styles.buttonText}>Yes</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.button} onPress={() => toggleModal(null)}>
+              <Text style={styles.buttonText}>No</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+
+      {/* <TouchableOpacity style={styles.item}>
         <View style={styles.iconText}>
           <FontAwesome name="lock" size={24} color="#fff" />
           <Text style={styles.text}>Privacy</Text>
         </View>
         <Entypo name="chevron-right" size={24} color="#fff" />
-      </TouchableOpacity>
-
-      <TouchableOpacity style={styles.item}>
-        <View style={styles.iconText}>
-          <FontAwesome name="eye" size={24} color="#fff" />
-          <Text style={styles.text}>Appearances</Text>
-        </View>
-        <Entypo name="chevron-right" size={24} color="#fff" />
-      </TouchableOpacity>
+      </TouchableOpacity> */}
 
       <View style={styles.item}>
         <View style={styles.iconText}>
@@ -71,10 +93,10 @@ export default function SettingsScreen() {
         />
       </View>
 
-      <TouchableOpacity style={styles.item}>
+      <TouchableOpacity style={styles.item} onPress={navigateToAbout}>
         <View style={styles.iconText}>
           <FontAwesome name="info-circle" size={24} color="#fff" />
-          <Text style={styles.text}>About</Text>
+          <Text style={styles.text}>About Us</Text>
         </View>
         <Entypo name="chevron-right" size={24} color="#fff" />
       </TouchableOpacity>
@@ -128,5 +150,41 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 18,
     fontWeight: 'bold',
+  },
+  modal: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  popupContainer: {
+    width: 300,
+    padding: 20,
+    backgroundColor: '#fff',
+    borderRadius: 10,
+    alignItems: 'center',
+  },
+  message: {
+    fontSize: 16,
+    textAlign: 'center',
+    marginBottom: 20,
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  button: {
+    marginHorizontal: 10,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    backgroundColor: '#6200EE',
+    borderRadius: 5,
+  },
+  buttonText: {
+    color: 'white',
+    fontWeight: 'bold',
+  },
+  titleTwo: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 10,
   },
 });

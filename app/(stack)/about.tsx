@@ -13,9 +13,7 @@ export default function About() {
 
     const navigation = useNavigation();
 
-    const handleBackPress = () => {
-        navigation.goBack();
-      };
+    const handleBackPress = () => {navigation.goBack();};
     
     return (       
         <View style={styles.container}>
@@ -68,6 +66,5 @@ const styles = StyleSheet.create({
   },
   friendsList: {
     alignItems: 'center',
-    // paddingTop: 0,
   },
 });

@@ -9,7 +9,7 @@ export default function Login() {
   const [errorMessage, setErrorMessage] = useState('');
 
 
-  const backendUrl = 'http://192.168.1.219:8080'; // Use your computer's IP address and port
+  const backendUrl = 'https://192.168.1.219:8080'; // Use your computer's IP address and port
 
   const handleLogin = async () => {
     console.log('Email:', email);
@@ -44,7 +44,7 @@ export default function Login() {
   };
   
   function handleSignUp(event: GestureResponderEvent): void {
-    throw new Error('Function not implemented.');
+    router.push('./register');
   }
   
   return (

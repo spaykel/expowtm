@@ -23,6 +23,7 @@ const Register = () => {
 
   const handleSubmit = () => {
     // Handle form submission logic here
+    router.push("/login")
     console.log("User Registered:", form);
   };
 

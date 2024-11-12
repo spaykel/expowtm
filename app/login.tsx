@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, GestureResponderEvent } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image } from 'react-native';
 import { useRouter } from 'expo-router';
+import { FIREBASE_AUTH, signInWithEmailAndPassword } from "./FirebaseConfig"; // Import from firebaseConfig
 
 export default function Login() {
   const router = useRouter();
@@ -8,52 +9,36 @@ export default function Login() {
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
 
-
-  const backendUrl = 'http://192.168.1.219:8080'; // Use your computer's IP address and port
-
   const handleLogin = async () => {
-    console.log('Email:', email);
-    console.log('Password:', password);
-
-
     try {
-      const response = await fetch(`${backendUrl}/api/users/login`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          email,
-          password,
-        }),
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        console.log('Login Response:', data);
-        router.push('/'); // Redirect to the home screen or dashboard
-      } else {
-        const errorData = await response.json();
-        setErrorMessage(errorData.message || 'Invalid email or password');
-        console.error('Login failed:', errorData.message);
-      }
+      // Sign in using Firebase Authentication
+      await signInWithEmailAndPassword(FIREBASE_AUTH, email, password);
+      console.log('Login successful');
+      // Redirect to the home page (index)
+      router.push('./(tabs)');
     } catch (error) {
-      console.error('Error during login request:', error);
-      setErrorMessage('An error occurred. Please try again.');
+      // Handle login error
+      console.error("error");
+      setErrorMessage('Invalid email or password');
     }
   };
-  
-  function handleSignUp(event: GestureResponderEvent): void {
-    throw new Error('Function not implemented.');
-  }
-  
+
+  const handleSignUp = () => {
+    // Handle sign-up logic here (you could navigate to a sign-up page)
+    console.log('Redirect to sign-up page');
+  };
+
   return (
     <View style={styles.container}>
       <Image
-        source={require('@/assets/images/WTM-Logo.png')}
+        source={require('@/assets/images/CRP-Logo.png')}
         style={styles.logo}
       />
       <Text style={styles.title}>Login</Text>
+
+      {errorMessage ? (
+        <Text style={styles.errorText}>{errorMessage}</Text>
+      ) : null}
 
       <TextInput
         style={styles.input}
@@ -76,13 +61,14 @@ export default function Login() {
       <TouchableOpacity style={styles.button} onPress={handleLogin}>
         <Text style={styles.buttonText}>Login</Text>
       </TouchableOpacity>
-      
+
       <TouchableOpacity style={[styles.button, styles.signUpButton]} onPress={handleSignUp}>
         <Text style={styles.signUpButtonText}>Sign Up</Text>
       </TouchableOpacity>
     </View>
   );
 }
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -140,5 +126,9 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 16,
     fontWeight: 'bold',
+  },
+  errorText: {
+    color: 'red',
+    marginBottom: 10,
   },
 });

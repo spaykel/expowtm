@@ -54,7 +54,7 @@ export default function Login() {
 
   // Sign-up action (to be implemented later)
   function handleSignUp(event: GestureResponderEvent): void {
-    throw new Error('Function not implemented.');
+    router.push('./register');
   }
 
   return (

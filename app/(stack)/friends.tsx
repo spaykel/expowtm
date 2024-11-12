@@ -19,7 +19,7 @@ const PastReviewsScreen: React.FC = () => {
 
   const handleFriendPress = (friend: string) => {
     // Navigate to the friend’s profile or another screen, passing the friend's name as a parameter
-    navigation.navigate('FriendProfile', { friendName: friend });
+    // navigation.navigate('FriendProfile', { friendName: friend });
   };
 
   const navigateToAddFriends = () => router.push('../(stack)/addFriends');

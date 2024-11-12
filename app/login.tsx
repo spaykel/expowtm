@@ -4,49 +4,59 @@ import { useRouter } from 'expo-router';
 
 export default function Login() {
   const router = useRouter();
-  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [username, setUsername] = useState('');  // Added username state
   const [errorMessage, setErrorMessage] = useState('');
 
-
-  const backendUrl = 'http://192.168.1.219:8080'; // Use your computer's IP address and port
+  const backendUrl = 'http://192.168.1.110:8080'; // Use your server's IP and port
 
   const handleLogin = async () => {
-    console.log('Email:', email);
+    console.log('here');
     console.log('Password:', password);
-
-
+    console.log('Username:', username);  // Log username for debugging
+  
     try {
-      const response = await fetch(`${backendUrl}/api/users/login`, {
+      const response = await fetch(`${backendUrl}/api/user/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          email,
+          username,  // Send username and password for login
           password,
         }),
       });
-
+  
+      const textResponse = await response.text();  // Get the raw text response
+      console.log('Raw Response:', textResponse);
+  
       if (response.ok) {
-        const data = await response.json();
+        // If login is successful, parse the response as JSON and handle user data
+        const data = JSON.parse(textResponse);
         console.log('Login Response:', data);
-        router.push('/'); // Redirect to the home screen or dashboard
+  
+        // For example, save user info in state or navigate to a new screen
+        // setUser(data);  // Save user data in the frontend state (optional)
+  
+        // Redirect to home screen or dashboard after successful login
+        router.push('/');
       } else {
-        const errorData = await response.json();
-        setErrorMessage(errorData.message || 'Invalid email or password');
+        // If login failed, parse the error response
+        const errorData = JSON.parse(textResponse);
+        setErrorMessage(errorData.message || 'Invalid username or password');
         console.error('Login failed:', errorData.message);
       }
     } catch (error) {
       console.error('Error during login request:', error);
       setErrorMessage('An error occurred. Please try again.');
     }
-  };
-  
+  };  
+
+  // Sign-up action (to be implemented later)
   function handleSignUp(event: GestureResponderEvent): void {
     throw new Error('Function not implemented.');
   }
-  
+
   return (
     <View style={styles.container}>
       <Image
@@ -57,11 +67,10 @@ export default function Login() {
 
       <TextInput
         style={styles.input}
-        placeholder="Email"
+        placeholder="Username"  // Added username placeholder
         placeholderTextColor="#999"
-        value={email}
-        onChangeText={setEmail}
-        keyboardType="email-address"
+        value={username}  // Bind username state
+        onChangeText={setUsername}  // Set username on input change
         autoCapitalize="none"
       />
       <TextInput
@@ -76,13 +85,16 @@ export default function Login() {
       <TouchableOpacity style={styles.button} onPress={handleLogin}>
         <Text style={styles.buttonText}>Login</Text>
       </TouchableOpacity>
-      
+
       <TouchableOpacity style={[styles.button, styles.signUpButton]} onPress={handleSignUp}>
         <Text style={styles.signUpButtonText}>Sign Up</Text>
       </TouchableOpacity>
+
+      {errorMessage ? <Text style={styles.error}>{errorMessage}</Text> : null}
     </View>
   );
 }
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -140,5 +152,10 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 16,
     fontWeight: 'bold',
+  },
+  error: {
+    color: 'red',
+    marginTop: 10,
+    fontSize: 14,
   },
 });

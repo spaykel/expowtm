@@ -1,29 +1,30 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, GestureResponderEvent } from 'react-native';
 import { useRouter } from 'expo-router';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function Login() {
   const router = useRouter();
-  const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
 
 
-  const backendUrl = 'https://192.168.1.219:8080'; // Use your computer's IP address and port
+  const backendUrl = "http://192.168.1.219:8080/api/user/login"; // Use your computer's IP address and port
 
   const handleLogin = async () => {
-    console.log('Email:', email);
+    console.log('Username:', username);
     console.log('Password:', password);
 
 
     try {
-      const response = await fetch(`${backendUrl}/api/users/login`, {
+      const response = await fetch(`${backendUrl}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          email,
+          username,
           password,
         }),
       });
@@ -57,10 +58,10 @@ export default function Login() {
 
       <TextInput
         style={styles.input}
-        placeholder="Email"
+        placeholder="Username"
         placeholderTextColor="#999"
-        value={email}
-        onChangeText={setEmail}
+        value={username}
+        onChangeText={setUsername}
         keyboardType="email-address"
         autoCapitalize="none"
       />
@@ -142,3 +143,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
 });
+
+function setUser(arg0: { username: string; }) {
+  throw new Error('Function not implemented.');
+}

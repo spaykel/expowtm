@@ -41,8 +41,9 @@ export default function Login() {
         console.error('Login failed:', errorData.message);
       }
     } catch (error) {
-      console.error('Error during login request:', error);
-      setErrorMessage('An error occurred. Please try again.');
+      // Handle login error
+      console.error("error");
+      setErrorMessage('Invalid email or password');
     }
   };
   
@@ -57,6 +58,10 @@ export default function Login() {
         style={styles.logo}
       />
       <Text style={styles.title}>Login</Text>
+
+      {errorMessage ? (
+        <Text style={styles.errorText}>{errorMessage}</Text>
+      ) : null}
 
       <TextInput
         style={styles.input}
@@ -79,13 +84,14 @@ export default function Login() {
       <TouchableOpacity style={styles.button} onPress={handleLogin}>
         <Text style={styles.buttonText}>Login</Text>
       </TouchableOpacity>
-      
+
       <TouchableOpacity style={[styles.button, styles.signUpButton]} onPress={handleSignUp}>
         <Text style={styles.signUpButtonText}>Sign Up</Text>
       </TouchableOpacity>
     </View>
   );
 }
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -143,6 +149,10 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 16,
     fontWeight: 'bold',
+  },
+  errorText: {
+    color: 'red',
+    marginBottom: 10,
   },
 });
 

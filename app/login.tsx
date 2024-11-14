@@ -15,7 +15,7 @@ export default function Login() {
   const handleLogin = async () => {
     console.log('Username:', username);
     console.log('Password:', password);
-  
+    
     try {
       const response = await fetch(`${backendUrl}`, {
         method: 'POST',
@@ -32,14 +32,9 @@ export default function Login() {
       console.log('Raw Response:', textResponse);
   
       if (response.ok) {
-        // If login is successful, parse the response as JSON and handle user data
         const data = JSON.parse(textResponse);
+        await AsyncStorage.setItem('username', data.username);
         console.log('Login Response:', data);
-  
-        // For example, save user info in state or navigate to a new screen
-        // setUser(data);  // Save user data in the frontend state (optional)
-  
-        // Redirect to home screen or dashboard after successful login
         router.push('/');
       } else {
         // If login failed, parse the error response
@@ -65,6 +60,10 @@ export default function Login() {
         style={styles.logo}
       />
       <Text style={styles.title}>Login</Text>
+
+      {errorMessage ? (
+        <Text style={styles.errorText}>{errorMessage}</Text>
+      ) : null}
 
       <TextInput
         style={styles.input}
@@ -155,14 +154,17 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
   },
-});
-
-function setUser(arg0: { username: string; }) {
-  throw new Error('Function not implemented.');
-}
+  errorText: {
+    color: 'red',
+    marginBottom: 10,
+  },
   error: {
     color: 'red',
     marginTop: 10,
     fontSize: 14,
   },
 });
+
+
+
+

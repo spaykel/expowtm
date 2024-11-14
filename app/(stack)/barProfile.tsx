@@ -2,8 +2,6 @@ import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, Image, StyleSheet, Modal, TextInput, Alert } from 'react-native';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
-import { useRouter } from 'expo-router';
-
 
 const BarProfile: React.FC = () => {
   const [starRating, setStarRating] = useState(0);
@@ -11,10 +9,7 @@ const BarProfile: React.FC = () => {
   const [busynessRating, setBusynessRating] = useState('');
   const [currentBusyness, setCurrentBusyness] = useState<number | null>(null); // State for current busyness
   const navigation = useNavigation();
-  const router = useRouter();
-
   
-  const navigateToLeaveReview = () => router.push('../(stack)/leaveReview');
 
   const handleReportBusyness = () => {
     const rating = parseInt(busynessRating);
@@ -74,7 +69,7 @@ const BarProfile: React.FC = () => {
           <Text style={styles.buttonText}>Get Directions</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.button} onPress={navigateToLeaveReview}>
+        <TouchableOpacity style={styles.button}>
           <Text style={styles.buttonText}>Leave a Review</Text>
         </TouchableOpacity>
 

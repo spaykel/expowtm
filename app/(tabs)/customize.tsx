@@ -3,28 +3,40 @@ import {View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import * as ImagePicker from 'expo-image-picker';
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import { useRouter } from 'expo-router';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
 
 /* TO DO:
   need to make the users account information appear after they sign in (username, name, age)
   going to need a counter for how many bars we have visited
   going to need a counter for how many bars we have visited
 */
-
-// change these later when you do backend coding
-let username = "john_doe_007"
-let name = "John Doe";
-let age = 20;
-let numBarsVisited = 50;
-
 export default function TabTwoScreen() {
+  const [username, setUsername] = useState('');
+  const [name, setName] = useState('');
+  const [age, setAge] = useState('');
 
+  let numBarsVisited = 50;
   const router = useRouter();
-
   // const [imageSrc, setImageSrc] = useState(null); // Default profile picture
   const [imageSrc, setImageSrc] = useState<string | null>(null); // Specify type as string | null
 
+  useEffect(() => {
+    const fetchUsername = async () => {
+      try {
+        const storedUsername = await AsyncStorage.getItem('username');
+        console.log("Stored Username:", storedUsername);
+        setUsername(storedUsername ?? '');
+
+      } catch (error) {
+        console.error("Error fetching username:", error);
+      }
+    };
+
+    fetchUsername();
+  }, []);
 
   const handleImageChange = async () => {
     // Request permission to access images
@@ -62,7 +74,7 @@ export default function TabTwoScreen() {
       </ThemedView>
       {/* <Image source={require('@/assets/images/braver-blank-pfp_new.jpg')} style={{ alignSelf: 'center' }} /> */}
       {/* going to change image on click here */}
-      {/* Profile Picture */}
+          {/* Profile Picture */}
       <TouchableOpacity onPress={handleImageChange}>
         <Image
           source={imageSrc ? { uri: imageSrc } : require('@/assets/images/braver-blank-pfp_new.jpg')}
@@ -70,10 +82,6 @@ export default function TabTwoScreen() {
         />
       </TouchableOpacity>
 
-      {/* Going to need to change these when the backend connects */}
-      <ThemedText>{'\n'}Name: {name}</ThemedText> 
-      <ThemedText>Age: {age}{'\n'}</ThemedText>
-      
       {/* Past Reviews button */}
       <TouchableOpacity style={[styles.button, styles.pastRatingsButton]} onPress={navigateToPastReviews}>
         <Text style={styles.buttonText}>Past Reviews</Text>
@@ -124,7 +132,7 @@ const styles = StyleSheet.create({
     width: 150,
     height: 150,
     borderRadius: 75,
-    marginBottom: 20,
+    marginBottom: 50,
   },
   button: {
     width: '75%',

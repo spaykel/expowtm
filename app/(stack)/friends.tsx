@@ -1,17 +1,34 @@
-import React from 'react';
-import { View, StyleSheet, ScrollView, TouchableOpacity, Text } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, StyleSheet, ScrollView, TouchableOpacity, Text, ActivityIndicator } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useRouter } from 'expo-router';
+import axios from 'axios';
 
-
-const PastReviewsScreen: React.FC = () => {
+const FriendScreen: React.FC = () => {
+  const [friends, setFriends] = useState<any[]>([]); 
+  const [loading, setLoading] = useState(true);
   const navigation = useNavigation();
   const router = useRouter();
 
+  useEffect(() => {
+    const fetchFriends = async () => {
+      try {
+        const response = await axios.get(`http://192.168.1.219:8080/api/friends/list`, {
+          params: { username: 'Migo00' },
+        });
+        setFriends(response.data);
+      } catch (error) {
+        console.error("Error fetching friends:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchFriends();
+  }, []);
 
   const handleBackPress = () => {
     navigation.goBack();
@@ -26,7 +43,6 @@ const PastReviewsScreen: React.FC = () => {
 
   return (
     <ThemedView style={styles.container}>
-      {/* Back Button */}
       <TouchableOpacity style={styles.backButton} onPress={handleBackPress}>
         <Ionicons name="arrow-back" size={24} color="#ffffff" />
       </TouchableOpacity>
@@ -34,23 +50,24 @@ const PastReviewsScreen: React.FC = () => {
       <View style={styles.titleContainer}>
         <ThemedText type="title" style={styles.titleText}>Friends</ThemedText>
       </View>
-      
-      {/* Scrollable list of friends */}
-      <ScrollView contentContainerStyle={styles.friendsList} showsVerticalScrollIndicator={false}>
-        {['Miguel', 'Sammy', 'Nick'].map((friend, index) => (
-          <TouchableOpacity key={index} style={styles.friendItem} onPress={() => handleFriendPress(friend)}>
-            <Ionicons name="person-circle-outline" size={36} color="#bbb" style={styles.icon} />
-            <ThemedText type="default" style={styles.friendText}>{friend}</ThemedText>
+
+      {loading ? (
+        <ActivityIndicator size="large" color="#6200EE" />
+      ) : (
+        <ScrollView contentContainerStyle={styles.friendsList} showsVerticalScrollIndicator={false}>
+          {friends.map((friend, index) => (
+            <TouchableOpacity key={index} style={styles.friendItem} onPress={() => handleFriendPress(friend.username)}>
+              <Ionicons name="person-circle-outline" size={36} color="#bbb" style={styles.icon} />
+              <ThemedText type="default" style={styles.friendText}>{friend.username}</ThemedText>
+            </TouchableOpacity>
+          ))}
+
+          <ThemedText>{'\n'}</ThemedText>
+          <TouchableOpacity style={[styles.button, styles.pastRatingsButton]} onPress={navigateToAddFriends}>
+            <Text style={styles.buttonText}>Add Friend</Text>
           </TouchableOpacity>
-        ))}
-      
-      
-      {/* Add Friends Button */}    
-      <ThemedText>{'\n'}</ThemedText>
-        <TouchableOpacity style={[styles.button, styles.pastRatingsButton]} onPress={navigateToAddFriends}>
-        <Text style={styles.buttonText}>Add Friend</Text>
-      </TouchableOpacity>
-      </ScrollView>
+        </ScrollView>
+      )}
     </ThemedView>
   );
 };
@@ -122,4 +139,4 @@ const styles = StyleSheet.create({
   },  
 });
 
-export default PastReviewsScreen;
+export default FriendScreen;

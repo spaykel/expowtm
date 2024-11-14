@@ -9,14 +9,38 @@ import { ThemedView } from '@/components/ThemedView';
 const LeaveReview: React.FC = () => {
   const [review, setReview] = useState('');
 
-  const handleSubmit = () => {
-    Alert.alert('Review Submitted', `Your review: ${review}`);
-    setReview(''); // Clear the review text
+  const backendUrl = 'http://192.168.3.189:8080'; // Use your server's IP and port
+
+
+  const handleSubmit = async () => {
+    try {
+      const response = await fetch(`${backendUrl}/api/reviews`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          review_text: review,
+        }),
+      });
+  
+      if (response.ok) {
+        Alert.alert('Review Submitted', `Your review: ${review}`);
+        setReview(''); // Clear the review text
+      } else {
+        Alert.alert('Submission Failed', 'There was an issue submitting your review.');
+      }
+    } catch (error) {
+      console.error('Error submitting review:', error);
+      Alert.alert('Error', 'Could not submit review.');
+    }
+
+    // Alert.alert('Review Submitted', `Your review: ${review}`);
+    // setReview(''); // Clear the review text
   };
 
   const navigation = useNavigation();
   const handleBackPress = () => {navigation.goBack();};
-
 
   return (
     <View style={styles.container}>

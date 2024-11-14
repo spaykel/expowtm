@@ -5,8 +5,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function Login() {
   const router = useRouter();
-  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [username, setUsername] = useState('');  // Added username state
   const [errorMessage, setErrorMessage] = useState('');
 
 
@@ -16,8 +16,6 @@ export default function Login() {
     console.log('Username:', username);
     console.log('Password:', password);
     
-
-
     try {
       const response = await fetch(`${backendUrl}`, {
         method: 'POST',
@@ -25,32 +23,36 @@ export default function Login() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          username,
+          username,  // Send username and password for login
           password,
         }),
       });
-
+  
+      const textResponse = await response.text();  // Get the raw text response
+      console.log('Raw Response:', textResponse);
+  
       if (response.ok) {
-        const data = await response.json();
+        const data = JSON.parse(textResponse);
         await AsyncStorage.setItem('username', data.username);
         console.log('Login Response:', data);
-        router.push('/'); // Redirect to the home screen or dashboard
+        router.push('/');
       } else {
-        const errorData = await response.json();
-        setErrorMessage(errorData.message || 'Invalid email or password');
+        // If login failed, parse the error response
+        const errorData = JSON.parse(textResponse);
+        setErrorMessage(errorData.message || 'Invalid username or password');
         console.error('Login failed:', errorData.message);
       }
     } catch (error) {
-      // Handle login error
-      console.error("error");
-      setErrorMessage('Invalid email or password');
+      console.error('Error during login request:', error);
+      setErrorMessage('An error occurred. Please try again.');
     }
-  };
-  
+  };  
+
+  // Sign-up action (to be implemented later)
   function handleSignUp(event: GestureResponderEvent): void {
     router.push('./register');
   }
-  
+
   return (
     <View style={styles.container}>
       <Image
@@ -65,12 +67,12 @@ export default function Login() {
 
       <TextInput
         style={styles.input}
+
         placeholder="Username"
         placeholderTextColor="#999"
         value={username}
         onChangeText={setUsername}
         keyboardType="email-address"
-        autoCapitalize="none"
       />
       <TextInput
         style={styles.input}
@@ -88,6 +90,8 @@ export default function Login() {
       <TouchableOpacity style={[styles.button, styles.signUpButton]} onPress={handleSignUp}>
         <Text style={styles.signUpButtonText}>Sign Up</Text>
       </TouchableOpacity>
+
+      {errorMessage ? <Text style={styles.error}>{errorMessage}</Text> : null}
     </View>
   );
 }
@@ -154,8 +158,13 @@ const styles = StyleSheet.create({
     color: 'red',
     marginBottom: 10,
   },
+  error: {
+    color: 'red',
+    marginTop: 10,
+    fontSize: 14,
+  },
 });
 
-function setUser(arg0: { username: string; }) {
-  throw new Error('Function not implemented.');
-}
+
+
+

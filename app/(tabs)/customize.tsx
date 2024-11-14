@@ -62,8 +62,8 @@ export default function TabTwoScreen() {
       </ThemedView>
       {/* <Image source={require('@/assets/images/braver-blank-pfp_new.jpg')} style={{ alignSelf: 'center' }} /> */}
       {/* going to change image on click here */}
-            {/* Profile Picture */}
-            <TouchableOpacity onPress={handleImageChange}>
+      {/* Profile Picture */}
+      <TouchableOpacity onPress={handleImageChange}>
         <Image
           source={imageSrc ? { uri: imageSrc } : require('@/assets/images/braver-blank-pfp_new.jpg')}
           style={styles.profileImage}

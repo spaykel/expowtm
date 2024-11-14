@@ -9,8 +9,8 @@ import Login from './login';
 const Register = () => {
   const navigation = useNavigation();
   const [form, setForm] = useState({
-    firstName: '',
-    lastName: '',
+    firstname: '',
+    lastname: '',
     username: '',
     email: '',
     password: '',
@@ -21,11 +21,27 @@ const Register = () => {
     setForm({ ...form, [field]: value });
   };
 
-  const handleSubmit = () => {
-    // Handle form submission logic here
-    router.push("/login")
-    console.log("User Registered:", form);
+  const handleSubmit = async () => {
+    try {
+      const response = await fetch("http://192.168.1.219:8080/api/user/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(form),
+      });
+      
+      if (response.ok) {
+        console.log("User Registered:", form);
+        router.push("/login");
+      } else {
+        console.error("Registration failed");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+    }
   };
+  
 
   return (
     <View style={styles.container}>
@@ -41,15 +57,15 @@ const Register = () => {
       <TextInput
         style={styles.input}
         placeholder="First Name"
-        value={form.firstName}
-        onChangeText={(value) => handleInputChange('firstName', value)}
+        value={form.firstname}
+        onChangeText={(value) => handleInputChange('firstname', value)}
       />
 
       <TextInput
         style={styles.input}
         placeholder="Last Name"
-        value={form.lastName}
-        onChangeText={(value) => handleInputChange('lastName', value)}
+        value={form.lastname}
+        onChangeText={(value) => handleInputChange('lastname', value)}
       />
 
       <TextInput

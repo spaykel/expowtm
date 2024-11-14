@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, GestureResponderEvent } from 'react-native';
 import { useRouter } from 'expo-router';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function Login() {
   const router = useRouter();
@@ -8,15 +9,14 @@ export default function Login() {
   const [username, setUsername] = useState('');  // Added username state
   const [errorMessage, setErrorMessage] = useState('');
 
-  const backendUrl = 'http://192.168.3.189:8080'; // Use your server's IP and port
+  const backendUrl = "http://192.168.1.219:8080/api/user/login"; // Use your computer's IP address and port
 
   const handleLogin = async () => {
-    console.log('here');
+    console.log('Username:', username);
     console.log('Password:', password);
-    console.log('Username:', username);  // Log username for debugging
-  
+    
     try {
-      const response = await fetch(`${backendUrl}/api/user/login`, {
+      const response = await fetch(`${backendUrl}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -31,14 +31,9 @@ export default function Login() {
       console.log('Raw Response:', textResponse);
   
       if (response.ok) {
-        // If login is successful, parse the response as JSON and handle user data
         const data = JSON.parse(textResponse);
+        await AsyncStorage.setItem('username', data.username);
         console.log('Login Response:', data);
-  
-        // For example, save user info in state or navigate to a new screen
-        // setUser(data);  // Save user data in the frontend state (optional)
-  
-        // Redirect to home screen or dashboard after successful login
         router.push('/');
       } else {
         // If login failed, parse the error response
@@ -65,13 +60,18 @@ export default function Login() {
       />
       <Text style={styles.title}>Login</Text>
 
+      {errorMessage ? (
+        <Text style={styles.errorText}>{errorMessage}</Text>
+      ) : null}
+
       <TextInput
         style={styles.input}
-        placeholder="Username"  // Added username placeholder
+
+        placeholder="Username"
         placeholderTextColor="#999"
-        value={username}  // Bind username state
-        onChangeText={setUsername}  // Set username on input change
-        autoCapitalize="none"
+        value={username}
+        onChangeText={setUsername}
+        keyboardType="email-address"
       />
       <TextInput
         style={styles.input}
@@ -153,9 +153,17 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
   },
+  errorText: {
+    color: 'red',
+    marginBottom: 10,
+  },
   error: {
     color: 'red',
     marginTop: 10,
     fontSize: 14,
   },
 });
+
+
+
+

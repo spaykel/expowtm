@@ -15,6 +15,7 @@ export default function Login() {
   const handleLogin = async () => {
     console.log('Username:', username);
     console.log('Password:', password);
+    
 
 
     try {
@@ -31,6 +32,7 @@ export default function Login() {
 
       if (response.ok) {
         const data = await response.json();
+        await AsyncStorage.setItem('username', data.username);
         console.log('Login Response:', data);
         router.push('/'); // Redirect to the home screen or dashboard
       } else {

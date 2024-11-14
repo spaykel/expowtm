@@ -6,6 +6,7 @@ import { ThemedView } from '@/components/ThemedView';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useRouter } from 'expo-router';
 import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const FriendScreen: React.FC = () => {
   const [friends, setFriends] = useState<any[]>([]); 
@@ -16,8 +17,10 @@ const FriendScreen: React.FC = () => {
   useEffect(() => {
     const fetchFriends = async () => {
       try {
+        const storedUsername = await AsyncStorage.getItem('username');
+        console.log("Stored Username:", storedUsername);
         const response = await axios.get(`http://192.168.1.219:8080/api/friends/list`, {
-          params: { username: 'Migo00' },
+          params: {username: storedUsername},
         });
         setFriends(response.data);
       } catch (error) {

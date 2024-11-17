@@ -5,23 +5,23 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
+  Platform
 } from "react-native";
 import { useState } from "react";
 import { useRouter } from "expo-router";
 import * as Location from "expo-location";
 import axios from "axios";
 
+
 const router = useRouter();
 
 export default function HomeScreen() {
   const [search, setSearch] = useState("");
-  const [bars, setBars] = useState([]);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState("");
 
   //function to request and return current position
   const handleLocationSearch = async () => {
     try {
-      console.log("(Placeholder message) request search by location");
 
       //request location services
       let { status } = await Location.requestForegroundPermissionsAsync();
@@ -38,16 +38,13 @@ export default function HomeScreen() {
       //fetch bars using location
       const fetchedBars = await fetchBars(latitude, longitude);
 
-      //testing purposes
-      console.log("Fetched Bars:", fetchedBars); // Log the fetched data
-
-      //update state with results
-      setBars(fetchedBars);
-      setError(null);
+      //stringify to pass as query param
+      const jsonBars = JSON.stringify(fetchedBars);
 
       //pass fetchedBars to barList
-      router.push({ pathname: '../(stack)/barList', 
-        params: {bars: fetchedBars}
+      router.push({ 
+        pathname: '../(stack)/barList', 
+        params: {bars: encodeURIComponent(jsonBars)}
       });
 
     } catch (error) {
@@ -59,7 +56,6 @@ export default function HomeScreen() {
   };
 
   const handleAddressSearch = () => {
-    console.log("Searching with address: ", search);
     router.push({
       pathname: "../(stack)/barList",
     });
@@ -67,8 +63,11 @@ export default function HomeScreen() {
 
   const fetchBars = async (latitude: number, longitude: number) => {
   try {
-    // Define the request URL with parameters
-    const requestUrl = `http://localhost:5000/api/places`;
+    //automatically create baseUrl depending if testing with web or android emulator
+    const baseUrl = Platform.OS === 'android' ? 'http://10.0.2.2:5000' : 'http://localhost:5000';
+    const requestUrl = `${baseUrl}/api/places`;
+
+
     const params = {
       latitude,
       longitude,

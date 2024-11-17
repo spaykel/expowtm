@@ -3,34 +3,85 @@ import React from 'react';
 import { View, Text, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
 import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
-
+import { useLocalSearchParams } from 'expo-router';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import {useNavigation } from '@react-navigation/native';
+import { useRouter } from "expo-router";
 
+//in the format of the json that the google maps api returns
 type Bar = {
-  id: number;
-  name: string;
-  address: string;
-  rating: number;
+  business_status: string,
+    geometry: {
+        location: {
+            lat: number,
+            lng: number
+        },
+        viewport: {
+            northeast: {
+                lat: number,
+                lng: number
+            },
+            southwest: {
+                lat: number,
+                lng: number
+            }
+        }
+    },
+    icon: string,
+    icon_background_color: string,
+    icon_mask_base_uri: string,
+    name: string,
+    photos: [
+        {
+            height: number,
+            html_attributions: string[],
+            photo_reference: string,
+            width: number
+        }
+    ],
+    place_id: string,
+    plus_code: {
+        compound_code: string,
+        global_code: string
+    },
+    rating: number,
+    reference: string,
+    scope: string,
+    types: string[],
+    user_ratings_total: number,
+    vicinity: string
 };
 
-//will be replaced with backend, fetching bars via API
-const bars: Bar[] = [
-  { id: 1, name: 'Mecenate Palace Hotel', address: 'Via Carlo Alberto, 3', rating: 4.2 },
-  { id: 2, name: 'Hotel d\'Inghilterra Roma\' - Starhotels Collezione', address: 'V. Bocca di Leone, 14', rating: 4.3 },
-  { id: 3, name: 'Hotel Palladium Palace', address: 'Via Gioberti, 36', rating: 4 },
-  { id: 4, name: 'Hotel Villa delle Rose', address: ' Via Vicenza, 5', rating: 3.8 },
-  // Add more bars here as needed
-];
-
 const BarListScreen: React.FC = () => {
+  const { bars: barsParam } = useLocalSearchParams<{ bars: string }>();
+
+  // Parse the `bars` JSON string to an array of `Bar` objects
+  let bars: Bar[] = barsParam ? JSON.parse(decodeURIComponent(barsParam)) : [];
+  
+  // If bars is an object containing a page token extract it (used to get next 20 results)
+  if ((bars as any).next_page_token) {
+    let pageToken = (bars as any).next_page_token;
+  }
+  
+  // If bars is an object containing a `response` property, extract it
+  if ((bars as any).response) {
+    bars = (bars as any).response;
+  }
+
+  const router = useRouter();
+
   const navigation = useNavigation();
   const handleBackPress = () => {
     navigation.goBack();
   };
-
-
   
+  const handleBarPress = (barData: Bar) => {
+    router.push({ 
+      pathname: '../(stack)/barProfile', 
+      params: {bar: encodeURIComponent(JSON.stringify(barData))}
+    });
+
+  }
 
   return (
     <ThemedView style={styles.container}>
@@ -46,10 +97,10 @@ const BarListScreen: React.FC = () => {
       <ScrollView contentContainerStyle={styles.barList} showsVerticalScrollIndicator={false}>
         {
         bars.map((item) => (
-          <TouchableOpacity key={item.id} style={styles.barItem}>
+          <TouchableOpacity key={item.place_id} style={styles.barItem} onPress={() => handleBarPress(item)}>
             <View style={styles.barInfoContainer}>
             <Text style={styles.name}>{item.name}</Text>
-            <Text style={styles.address}>Address: {item.address}</Text>
+            <Text style={styles.address}>Address: {item.vicinity}</Text>
             <Text style={styles.rating}>Rating: {item.rating} / 5</Text>
             </View>          
           </TouchableOpacity>

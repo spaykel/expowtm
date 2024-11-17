@@ -3,6 +3,8 @@ import { ScrollView, View, Text, TouchableOpacity, Image, StyleSheet, Modal, Tex
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { useLocalSearchParams } from 'expo-router';
 import {useNavigation } from '@react-navigation/native';
+import { useRouter } from 'expo-router';
+
 
 //in the format of the json that the google maps api returns
 type Bar = {
@@ -48,6 +50,7 @@ type Bar = {
     vicinity: string
 };
 
+
 const BarProfile: React.FC = () => {
   const { bar: barParam } = useLocalSearchParams<{ bar: string }>();
   let bar: Bar = JSON.parse(decodeURIComponent(barParam));
@@ -62,6 +65,10 @@ const BarProfile: React.FC = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [busynessRating, setBusynessRating] = useState('');
   const [currentBusyness, setCurrentBusyness] = useState<number | null>(null); // State for current busyness
+  const router = useRouter();
+
+  
+  const navigateToLeaveReview = () => router.push('../(stack)/leaveReview');
 
   const handleGetDirections = () => {
     const directionsUrl = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(bar.name)}&destination_place_id${bar.place_id}`;
@@ -131,7 +138,7 @@ const BarProfile: React.FC = () => {
           <Text style={styles.buttonText}>Get Directions</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.button}>
+        <TouchableOpacity style={styles.button} onPress={navigateToLeaveReview}>
           <Text style={styles.buttonText}>Leave a Review</Text>
         </TouchableOpacity>
 
@@ -181,8 +188,8 @@ const styles = StyleSheet.create({
   },
   backButton: {
     position: 'absolute',
-    top: 40,
-    left: 20,
+    top: 45,
+    left: 15,
   },
   image: {
     width: '90%',
@@ -235,7 +242,7 @@ const styles = StyleSheet.create({
     color: '#FFD700',
   },
   starIcon: {
-    paddingTop: 14,
+    paddingTop: 3,
     marginLeft: 6,
   },
   text: {

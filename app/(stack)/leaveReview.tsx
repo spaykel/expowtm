@@ -12,6 +12,13 @@ const LeaveReview: React.FC = () => {
   const backendUrl = 'http://192.168.3.189:8080'; // Use your server's IP and port
 
   const handleSubmit = async () => {
+    if (!review.trim()) {
+      Alert.alert("Error", "Review text cannot be empty.");
+      return;
+    }
+  
+    console.log("start handleSubmit");
+  
     try {
       const response = await fetch(`${backendUrl}/api/reviews`, {
         method: 'POST',
@@ -19,7 +26,9 @@ const LeaveReview: React.FC = () => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          review_text: review,
+          reviewText: review,
+          bar_id: 1, // fix later
+          user_id: 1 // fix later
         }),
       });
   
@@ -38,10 +47,8 @@ const LeaveReview: React.FC = () => {
       console.error('Error submitting review:', error);
       Alert.alert('Error', 'Could not submit review.');
     }
-
-    // Alert.alert('Review Submitted', `Your review: ${review}`);
-    // setReview(''); // Clear the review text
   };
+  
 
   const navigation = useNavigation();
   const handleBackPress = () => {navigation.goBack();};

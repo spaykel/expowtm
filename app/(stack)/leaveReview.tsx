@@ -11,7 +11,6 @@ const LeaveReview: React.FC = () => {
 
   const backendUrl = 'http://192.168.3.189:8080'; // Use your server's IP and port
 
-
   const handleSubmit = async () => {
     try {
       const response = await fetch(`${backendUrl}/api/reviews`, {
@@ -24,11 +23,16 @@ const LeaveReview: React.FC = () => {
         }),
       });
   
+      const textResponse = await response.text();  // Get the raw text response
+      console.log('Raw Response:', textResponse);
+
       if (response.ok) {
         Alert.alert('Review Submitted', `Your review: ${review}`);
         setReview(''); // Clear the review text
       } else {
-        Alert.alert('Submission Failed', 'There was an issue submitting your review.');
+        const errorText = await response.text(); // Capture error message from server
+        console.error('Error response:', response.status, errorText);
+        Alert.alert('Submission Failed', `Error: ${errorText}`);
       }
     } catch (error) {
       console.error('Error submitting review:', error);

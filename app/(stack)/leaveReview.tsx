@@ -6,17 +6,24 @@ import { useNavigation } from '@react-navigation/native';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 
+import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 const LeaveReview: React.FC = () => {
   const [review, setReview] = useState('');
 
   const backendUrl = 'http://192.168.1.110:8080'; // Use your server's IP and port
-
 
   const handleSubmit = async () => {
     if (!review.trim()) {
       Alert.alert("Error", "Review text cannot be empty.");
       return;
     }
+
+    const storedUsername = await AsyncStorage.getItem('username');
+    const storedUserId = await AsyncStorage.getItem('userId');
+    console.log("Stored Username:", storedUsername);
+    console.log("Stored User Id:", storedUserId);
   
     console.log("start handleSubmit");
   
@@ -29,7 +36,7 @@ const LeaveReview: React.FC = () => {
         body: JSON.stringify({
           reviewText: review,
           bar_id: 1, // fix later
-          user_id: 1 // fix later
+          user_id: storedUserId
         }),
       });
   

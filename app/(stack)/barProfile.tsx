@@ -1,20 +1,82 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, Image, StyleSheet, Modal, TextInput, Alert } from 'react-native';
+import { ScrollView, View, Text, TouchableOpacity, Image, StyleSheet, Modal, TextInput, Alert, Linking } from 'react-native';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
-import { useNavigation } from '@react-navigation/native';
+import { useLocalSearchParams } from 'expo-router';
+import {useNavigation } from '@react-navigation/native';
 import { useRouter } from 'expo-router';
 
 
+//in the format of the json that the google maps api returns
+type Bar = {
+  business_status: string,
+    geometry: {
+        location: {
+            lat: number,
+            lng: number
+        },
+        viewport: {
+            northeast: {
+                lat: number,
+                lng: number
+            },
+            southwest: {
+                lat: number,
+                lng: number
+            }
+        }
+    },
+    icon: string,
+    icon_background_color: string,
+    icon_mask_base_uri: string,
+    name: string,
+    photos: [
+        {
+            height: number,
+            html_attributions: string[],
+            photo_reference: string,
+            width: number
+        }
+    ],
+    place_id: string,
+    plus_code: {
+        compound_code: string,
+        global_code: string
+    },
+    rating: number,
+    reference: string,
+    scope: string,
+    types: string[],
+    user_ratings_total: number,
+    vicinity: string
+};
+
+
 const BarProfile: React.FC = () => {
+  const { bar: barParam } = useLocalSearchParams<{ bar: string }>();
+  let bar: Bar = JSON.parse(decodeURIComponent(barParam));
+
+  const navigation = useNavigation();
+  const handleBackPress = () => {
+    navigation.goBack();
+  };
+
+
   const [starRating, setStarRating] = useState(0);
   const [modalVisible, setModalVisible] = useState(false);
   const [busynessRating, setBusynessRating] = useState('');
   const [currentBusyness, setCurrentBusyness] = useState<number | null>(null); // State for current busyness
-  const navigation = useNavigation();
   const router = useRouter();
 
   
   const navigateToLeaveReview = () => router.push('../(stack)/leaveReview');
+
+  const handleGetDirections = () => {
+    const directionsUrl = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(bar.name)}&destination_place_id${bar.place_id}`;
+    Linking.openURL(directionsUrl).catch((err) =>
+      Alert.alert("Error", "Unable to open the directions link.")
+    );  
+  };
+
 
   const handleReportBusyness = () => {
     const rating = parseInt(busynessRating);
@@ -29,18 +91,20 @@ const BarProfile: React.FC = () => {
   };
 
   return (
-    <View style={styles.container}>
+    <ScrollView contentContainerStyle={styles.container}>
       {/* Back button */}
-      
-      <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
+      <TouchableOpacity style={styles.backButton} onPress={handleBackPress}>
         <Ionicons name="arrow-back" size={24} color="white" />
       </TouchableOpacity>
 
       {/* Bar Name */}
-      <Text style={styles.barName}>On The Rox</Text>
+      <Text style={styles.barName}>{bar.name}</Text>
+
+      {/* Bar Address */}
+      <Text style={styles.barAddress}>{bar.vicinity}</Text>
 
       {/* Bar Image */}
-      <Image style={styles.image} source={require('@/assets/images/ontherox.png')} />
+      <Image style={styles.image} source={require("@/assets/images/ontherox.png")} />
 
       {/* Display Current Busyness */}
       <Text style={styles.busynessText}>
@@ -70,7 +134,7 @@ const BarProfile: React.FC = () => {
 
       {/* Action Buttons */}
       <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.button}>
+        <TouchableOpacity style={styles.button} onPress={handleGetDirections}>
           <Text style={styles.buttonText}>Get Directions</Text>
         </TouchableOpacity>
 
@@ -111,7 +175,7 @@ const BarProfile: React.FC = () => {
           </View>
         </View>
       </Modal>
-    </View>
+    </ScrollView>
   );
 };
 
@@ -188,6 +252,12 @@ const styles = StyleSheet.create({
   barName: {
     color: '#FFFFFF',
     fontSize: 32,
+    fontWeight: '700',
+    paddingTop: 10,
+  },
+  barAddress: {
+    color: '#FFFFFF',
+    fontSize: 18,
     fontWeight: '700',
     paddingTop: 10,
   },

@@ -9,8 +9,7 @@ export default function Login() {
   const [username, setUsername] = useState('');  // Added username state
   const [errorMessage, setErrorMessage] = useState('');
 
-
-  const backendUrl = "http://192.168.1.219:8080/api/user/login"; // Use your computer's IP address and port
+  const backendUrl = "http://192.168.2.241:8080/api/user/login"; // Use your computer's IP address and port
 
   const handleLogin = async () => {
     console.log('Username:', username);
@@ -34,6 +33,7 @@ export default function Login() {
       if (response.ok) {
         const data = JSON.parse(textResponse);
         await AsyncStorage.setItem('username', data.username);
+        await AsyncStorage.setItem('userId', String(data.userId));
         console.log('Login Response:', data);
         router.push('/');
       } else {

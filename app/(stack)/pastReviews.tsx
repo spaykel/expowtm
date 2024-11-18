@@ -1,19 +1,24 @@
-import React, { useState } from 'react';
-import { View, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import React, { useState, useEffect } from 'react';
+import { View, StyleSheet, ScrollView, TouchableOpacity, Alert } from 'react-native';
+import { useNavigation, useRoute } from '@react-navigation/native';
+import axios from 'axios';
 
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import Ionicons from '@expo/vector-icons/Ionicons';
 
-const reviewsData = [
-  { bar: 'On the Rox', text: 'On the Rox was so fun last night! I met some great people and the vibe was amazing.' },
-  { bar: 'Mate Bar', text: 'I had so much fun last night at Mate Bar! The drinks were top-notch, and the DJ was fantastic.' },
-  { bar: 'The Ice Club', text: 'The Ice Club could have been a bit better. The music was okay, but it was a bit too crowded for my taste.' },
-];
+interface Review {
+  id: number;
+  reviewText: string;
+  barId: number;
+  userId: number;
+}
 
 const PastReviewsScreen: React.FC = () => {
   const navigation = useNavigation();
+  const route = useRoute();
+  const { userId } = route.params as { userId: number }; // Get userId from navigation params
+  const [reviews, setReviews] = useState<Review[]>([]);
   const [expandedReviews, setExpandedReviews] = useState<{ [key: number]: boolean }>({});
 
   const handleBackPress = () => {
@@ -21,11 +26,25 @@ const PastReviewsScreen: React.FC = () => {
   };
 
   const toggleReview = (index: number) => {
-    setExpandedReviews(prevState => ({
+    setExpandedReviews((prevState) => ({
       ...prevState,
       [index]: !prevState[index],
     }));
   };
+
+  const fetchReviews = async () => {
+    try {
+      const response = await axios.get(`http://192.168.2.241:8080/api/reviews/user/${userId}`); // Fetch reviews by user
+      setReviews(response.data); // Set fetched reviews
+      console.log("response.data:", response.data);
+    } catch (error) {
+      Alert.alert('Error', 'Failed to fetch reviews');
+    }
+  };
+
+  useEffect(() => {
+    fetchReviews();
+  }, [userId]); // Fetch reviews whenever userId changes
 
   return (
     <ThemedView style={styles.container}>
@@ -41,19 +60,27 @@ const PastReviewsScreen: React.FC = () => {
 
       {/* Scrollable list of reviews */}
       <ScrollView contentContainerStyle={styles.reviewsList} showsVerticalScrollIndicator={false}>
-        {reviewsData.map((review, index) => (
-          <View key={index} style={styles.reviewItem}>
-            <ThemedText type="defaultSemiBold" style={styles.barName}>{review.bar}</ThemedText>
-            <ThemedText type="default" style={styles.reviewText}>
-              {expandedReviews[index] ? review.text : `${review.text.slice(0, 50)}...`}
-            </ThemedText>
-            <TouchableOpacity onPress={() => toggleReview(index)}>
-              <ThemedText type="link" style={styles.readMore}>
-                {expandedReviews[index] ? 'Show Less' : 'Read More'}
+        {reviews.length > 0 ? (
+          reviews.map((review, index) => (
+            <View key={review.id} style={styles.reviewItem}>
+              <ThemedText type="defaultSemiBold" style={styles.barName}>
+                {`Review for Bar ${review.barId}`} {/* Replace with dynamic bar name if needed */}
               </ThemedText>
-            </TouchableOpacity>
-          </View>
-        ))}
+              <ThemedText type="default" style={styles.reviewText}>
+                {expandedReviews[index] ? review.reviewText : `${review.reviewText.slice(0, 50)}...`}
+              </ThemedText>
+              <TouchableOpacity onPress={() => toggleReview(index)}>
+                <ThemedText type="link" style={styles.readMore}>
+                  {expandedReviews[index] ? 'Show Less' : 'Read More'}
+                </ThemedText>
+              </TouchableOpacity>
+            </View>
+          ))
+        ) : (
+          <ThemedText type="default" style={styles.noReviews}>
+            No reviews available for this user.
+          </ThemedText>
+        )}
       </ScrollView>
     </ThemedView>
   );
@@ -112,6 +139,12 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#1e90ff',
     alignSelf: 'flex-end',
+  },
+  noReviews: {
+    fontSize: 16,
+    color: '#cccccc',
+    textAlign: 'center',
+    marginTop: 20,
   },
 });
 

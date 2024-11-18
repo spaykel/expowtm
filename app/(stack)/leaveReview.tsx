@@ -35,7 +35,7 @@ const LeaveReview: React.FC = () => {
         },
         body: JSON.stringify({
           reviewText: review,
-          barId: 1, // fix later
+          barId: 27, // fix later
           userId: storedUserId
         }),
       });

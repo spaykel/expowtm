@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { View, StyleSheet, ScrollView, TouchableOpacity, Alert } from 'react-native';
-import { useNavigation, useRoute } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
 
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import Ionicons from '@expo/vector-icons/Ionicons';
+
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 interface Review {
   id: number;
@@ -16,8 +18,7 @@ interface Review {
 
 const PastReviewsScreen: React.FC = () => {
   const navigation = useNavigation();
-  const route = useRoute();
-  const { userId } = route.params as { userId: number }; // Get userId from navigation params
+  const [userId, setUserId] = useState<number | null>(null); // Track userId
   const [reviews, setReviews] = useState<Review[]>([]);
   const [expandedReviews, setExpandedReviews] = useState<{ [key: number]: boolean }>({});
 
@@ -32,19 +33,41 @@ const PastReviewsScreen: React.FC = () => {
     }));
   };
 
-  const fetchReviews = async () => {
+  const fetchUserId = async () => {
     try {
-      const response = await axios.get(`http://192.168.2.241:8080/api/reviews/user/${userId}`); // Fetch reviews by user
-      setReviews(response.data); // Set fetched reviews
-      console.log("response.data:", response.data);
+      const storedUserId = await AsyncStorage.getItem('userId');
+      if (storedUserId) {
+        setUserId(JSON.parse(storedUserId));
+      } else {
+        Alert.alert('Error', 'User ID not found. Please log in again.');
+        // navigation.navigate('Login'); // Navigate to login if no userId
+      }
     } catch (error) {
+      console.error('Error fetching userId:', error);
+      Alert.alert('Error', 'Failed to retrieve user ID.');
+    }
+  };
+
+  const fetchReviews = async () => {
+    if (!userId) return; // Prevent fetching if userId is null
+    try {
+      const response = await axios.get(`http://192.168.2.241:8080/api/reviews/user/${userId}`);
+      setReviews(response.data);
+    } catch (error) {
+      console.error('Error fetching reviews:', error);
       Alert.alert('Error', 'Failed to fetch reviews');
     }
   };
 
   useEffect(() => {
-    fetchReviews();
-  }, [userId]); // Fetch reviews whenever userId changes
+    fetchUserId(); // Fetch userId when component mounts
+  }, []);
+
+  useEffect(() => {
+    if (userId) {
+      fetchReviews(); // Fetch reviews when userId is available
+    }
+  }, [userId]);
 
   return (
     <ThemedView style={styles.container}>

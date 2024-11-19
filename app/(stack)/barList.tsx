@@ -1,5 +1,4 @@
-// BarListScreen.tsx
-import React from 'react';
+import React, { useEffect } from 'react';
 import { View, Text, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
 import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
@@ -7,79 +6,59 @@ import { useLocalSearchParams } from 'expo-router';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useRouter } from "expo-router";
 
-//in the format of the json that the google maps api returns
 type Bar = {
   business_status: string,
-    geometry: {
-        location: {
-            lat: number,
-            lng: number
-        },
-        viewport: {
-            northeast: {
-                lat: number,
-                lng: number
-            },
-            southwest: {
-                lat: number,
-                lng: number
-            }
-        }
-    },
-    icon: string,
-    icon_background_color: string,
-    icon_mask_base_uri: string,
-    name: string,
-    photos: [
-        {
-            height: number,
-            html_attributions: string[],
-            photo_reference: string,
-            width: number
-        }
-    ],
-    place_id: string,
-    plus_code: {
-        compound_code: string,
-        global_code: string
-    },
-    rating: number,
-    reference: string,
-    scope: string,
-    types: string[],
-    user_ratings_total: number,
-    vicinity: string
+  geometry: { location: { lat: number, lng: number } },
+  icon: string,
+  name: string,
+  place_id: string,
+  rating: number,
+  vicinity: string
 };
 
 const BarListScreen: React.FC = () => {
   const { bars: barsParam } = useLocalSearchParams<{ bars: string }>();
-
-  // Parse the `bars` JSON string to an array of `Bar` objects
-  let bars: Bar[] = barsParam ? JSON.parse(decodeURIComponent(barsParam)) : [];
-  
-  // If bars is an object containing a page token extract it (used to get next 20 results)
-  if ((bars as any).next_page_token) {
-    let pageToken = (bars as any).next_page_token;
-  }
-  
-  // If bars is an object containing a `response` property, extract it
-  if ((bars as any).response) {
-    bars = (bars as any).response;
-  }
-
   const router = useRouter();
 
-  const handleBackPress = () => {
-    router.back();
-  };
-  
-  const handleBarPress = (barData: Bar) => {
-    router.push({ 
-      pathname: '../(stack)/barProfile', 
-      params: {bar: encodeURIComponent(JSON.stringify(barData))}
-    });
+  let bars: Bar[] = barsParam ? JSON.parse(decodeURIComponent(barsParam)) : [];
 
-  }
+  // Add bar to database if not already present
+  const checkAndAddBar = async (bar: Bar) => {
+    try {
+      const checkResponse = await fetch(`http:// 192.168.1.110:8080/bars/check/${bar.place_id}`);
+      const exists = await checkResponse.json();
+
+      if (!exists) {
+        const addResponse = await fetch('http:// 192.168.1.110:8080/bars/add', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(bar),
+        });
+
+        if (addResponse.ok) {
+          console.log(`Added bar: ${bar.name}`);
+        } else {
+          console.error(`Failed to add bar: ${bar.name}`);
+        }
+      }
+    } catch (error) {
+      console.error(`Error checking/adding bar: ${bar.name}`, error);
+    }
+  };
+
+  // Run check and add for all bars when the component mounts
+  useEffect(() => {
+    bars.forEach(bar => checkAndAddBar(bar));
+  }, [bars]);
+
+  const handleBackPress = () => router.back();
+
+  const handleBarPress = (barData: Bar) => {
+    router.push({
+      pathname: '../(stack)/barProfile',
+      params: { bar: encodeURIComponent(JSON.stringify(barData)) },
+    });
+  };
 
   return (
     <ThemedView style={styles.container}>
@@ -87,20 +66,18 @@ const BarListScreen: React.FC = () => {
         <Ionicons name="arrow-back" size={24} color="#ffffff" />
       </TouchableOpacity>
 
-
       <View style={styles.titleContainer}>
         <ThemedText type="title" style={styles.title}>Moves Nearby</ThemedText>
       </View>
 
       <ScrollView contentContainerStyle={styles.barList} showsVerticalScrollIndicator={false}>
-        {
-        bars.map((item) => (
+        {bars.map((item) => (
           <TouchableOpacity key={item.place_id} style={styles.barItem} onPress={() => handleBarPress(item)}>
             <View style={styles.barInfoContainer}>
-            <Text style={styles.name}>{item.name}</Text>
-            <Text style={styles.address}>Address: {item.vicinity}</Text>
-            <Text style={styles.rating}>Rating: {item.rating} / 5</Text>
-            </View>          
+              <Text style={styles.name}>{item.name}</Text>
+              <Text style={styles.address}>Address: {item.vicinity}</Text>
+              <Text style={styles.rating}>Rating: {item.rating} / 5</Text>
+            </View>
           </TouchableOpacity>
         ))}
       </ScrollView>
@@ -109,71 +86,16 @@ const BarListScreen: React.FC = () => {
 };
 
 const styles = StyleSheet.create({
-  titleContainer: {
-    alignItems: 'center',
-    marginBottom: 24,
-  },
-  container: {
-    flex: 1,
-    paddingTop: 60, // Additional top padding
-    paddingHorizontal: 16,
-    backgroundColor: '#1a1a1a', // Dark mode background
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#ffffff', // Light text color for dark mode
-  },
-  itemContainer: {
-    padding: 15,
-    marginBottom: 15,
-    borderWidth: 1,
-    borderColor: '#ddd',
-    borderRadius: 8,
-  },
-  name: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#ffffff',
-  },
-  address: {
-    fontSize: 14,
-    color: '#ffffff',
-
-  },
-  rating: {
-    fontSize: 14,
-    color: '#ffffff',
-  },
-  backButton: {
-    position: 'absolute',
-    top: 50,
-    left: 16,
-    zIndex: 1,
-  },
-  barList: {
-    alignItems: 'center',
-    paddingTop: 20,
-  },
-  barItem: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingVertical: 12,
-    paddingHorizontal: 16,
-    borderRadius: 8,
-    backgroundColor: '#333333', // Dark card background
-    marginBottom: 12,
-    width: '100%',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.3,
-    shadowRadius: 1.41,
-    elevation: 2,
-  },
-  barInfoContainer: {
-    flexDirection: 'column', // Ensures items stack vertically
-  },
+  titleContainer: { alignItems: 'center', marginBottom: 24 },
+  container: { flex: 1, paddingTop: 60, paddingHorizontal: 16, backgroundColor: '#1a1a1a' },
+  title: { fontSize: 24, fontWeight: 'bold', color: '#ffffff' },
+  backButton: { position: 'absolute', top: 50, left: 16, zIndex: 1 },
+  barList: { alignItems: 'center', paddingTop: 20 },
+  barItem: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingVertical: 12, paddingHorizontal: 16, borderRadius: 8, backgroundColor: '#333333', marginBottom: 12, width: '100%', elevation: 2 },
+  barInfoContainer: { flexDirection: 'column' },
+  name: { fontSize: 18, fontWeight: 'bold', color: '#ffffff' },
+  address: { fontSize: 14, color: '#ffffff' },
+  rating: { fontSize: 14, color: '#ffffff' },
 });
 
 export default BarListScreen;

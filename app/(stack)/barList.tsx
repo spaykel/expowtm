@@ -22,34 +22,39 @@ const BarListScreen: React.FC = () => {
 
   let bars: Bar[] = barsParam ? JSON.parse(decodeURIComponent(barsParam)) : [];
 
-  // Add bar to database if not already present
-  const checkAndAddBar = async (bar: Bar) => {
+  // Add bar to the database
+  const addBar = async (bar: Bar) => {
     try {
-      const checkResponse = await fetch(`http:// 192.168.1.110:8080/bars/check/${bar.place_id}`);
-      const exists = await checkResponse.json();
+      const response = await fetch('http://192.168.2.241:8080/bars', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          placeId: bar.place_id, // Correct property access
+          name: bar.name,        // Correct property access
+        }),
+      });
 
-      if (!exists) {
-        const addResponse = await fetch('http:// 192.168.1.110:8080/bars/add', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(bar),
-        });
-
-        if (addResponse.ok) {
-          console.log(`Added bar: ${bar.name}`);
-        } else {
-          console.error(`Failed to add bar: ${bar.name}`);
-        }
+      if (response.ok) {
+        console.log(`Added bar: ${bar.name}`);
+      } else {
+        const errorMsg = await response.text();
+        console.error(`Failed to add bar: ${bar.name}. Server responded with: ${errorMsg}`);
       }
     } catch (error) {
-      console.error(`Error checking/adding bar: ${bar.name}`, error);
+      console.error(`Error adding bar: ${bar.name}`, error);
     }
   };
 
-  // Run check and add for all bars when the component mounts
+  // Add all bars once when the component mounts
   useEffect(() => {
-    bars.forEach(bar => checkAndAddBar(bar));
-  }, [bars]);
+    const addAllBars = async () => {
+      for (const bar of bars) {
+        await addBar(bar);
+      }
+    };
+
+    addAllBars();
+  }, []); // Empty dependency array ensures this runs only once
 
   const handleBackPress = () => router.back();
 

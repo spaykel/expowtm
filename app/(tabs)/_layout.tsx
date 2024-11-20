@@ -30,7 +30,7 @@ export default function TabLayout() {
         name="favorites"
         options={{
           title: 'Favorites',
-          tabBarIcon: ({ color, focused }) => (
+          tabBarIcon: ({ color }) => (
             <Entypo name="heart-outlined" size={30} color={color} />
           ),
         }}

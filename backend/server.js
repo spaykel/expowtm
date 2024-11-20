@@ -16,7 +16,6 @@ app.get("/api/places", async (req, res) => {
   const {
     latitude,
     longitude,
-    radius,
     type = "bar",
     keyword = "dancing",
   } = req.query;

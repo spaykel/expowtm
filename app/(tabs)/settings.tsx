@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, Switch, ScrollView, StyleSheet } from 'react-native';
-import { Entypo, FontAwesome, MaterialIcons } from '@expo/vector-icons';
+import { Entypo, FontAwesome } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import Modal from 'react-native-modal';
 

@@ -1,13 +1,9 @@
-import {View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
+import {View, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useNavigation } from '@react-navigation/native';
-
-
-{/* Can also add the WTM logo at the bottom of the */}
-
 
 export default function About() {
 

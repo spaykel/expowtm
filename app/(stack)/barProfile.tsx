@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Platform, ScrollView, View, Text, TouchableOpacity, Image, StyleSheet, Modal, TextInput, Alert, Linking } from 'react-native';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
-import { useLocalSearchParams } from 'expo-router';
-import { useRouter } from 'expo-router';
+import { useLocalSearchParams,useRouter } from 'expo-router';
 import axios from "axios";
 
 

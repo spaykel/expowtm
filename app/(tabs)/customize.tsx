@@ -1,4 +1,4 @@
-import {View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
+import {View, Text, StyleSheet, Image, TouchableOpacity, Alert } from 'react-native';
 
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
@@ -38,24 +38,104 @@ export default function TabTwoScreen() {
     fetchUsername();
   }, []);
 
+  // const handleImageChange = async () => {
+  //   // Request permission to access images
+  //   const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+  //   if (!permissionResult.granted) {
+  //     alert("Permission to access camera roll is required!");
+  //     return;
+  //   }
+
+  //   // Launch the image picker
+  //   const pickerResult = await ImagePicker.launchImageLibraryAsync({
+  //     mediaTypes: ImagePicker.MediaTypeOptions.Images,
+  //     allowsEditing: true,
+  //     aspect: [1, 1], // Square aspect ratio
+  //     quality: 1,
+  //   });
+
+  //   if (!pickerResult.canceled && pickerResult.assets && pickerResult.assets.length > 0) {
+  //     // setImageSrc(pickerResult.assets[0].uri); // Get the URI of the selected image
+
+  //     const imageUri = pickerResult.assets[0].uri;
+
+  //     const formData = new FormData();
+  //     formData.append('file', {
+  //         uri: imageUri,
+  //         type: 'image/jpeg',
+  //         name: 'profile_picture.jpg',
+  //     });
+
+  //     try {
+  //         const userId = await AsyncStorage.getItem('userId'); // Replace with your user ID logic
+  //         const response = await axios.post(
+  //             `http://<your-server-address>/api/user/${userId}/uploadProfilePicture`,
+  //             formData,
+  //             {
+  //                 headers: {
+  //                     'Content-Type': 'multipart/form-data',
+  //                 },
+  //             }
+  //         );
+  //         console.log('Profile picture updated:', response.data);
+  //     } catch (error) {
+  //         console.error('Error uploading profile picture:', error);
+  //     }
+  //   }
+  // };
+  
   const handleImageChange = async () => {
-    // Request permission to access images
     const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (!permissionResult.granted) {
-      alert("Permission to access camera roll is required!");
+      alert('Permission to access camera roll is required!');
       return;
     }
 
-    // Launch the image picker
     const pickerResult = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      mediaTypes: ImagePicker.MediaTypeOptions.Images, // Older version fallback
       allowsEditing: true,
-      aspect: [1, 1], // Square aspect ratio
+      aspect: [1, 1],
       quality: 1,
     });
 
     if (!pickerResult.canceled && pickerResult.assets && pickerResult.assets.length > 0) {
-      setImageSrc(pickerResult.assets[0].uri); // Get the URI of the selected image
+      const imageUri = pickerResult.assets[0].uri;
+      setImageSrc(imageUri); // Set the image locally
+
+      // Convert the image URI to a Blob
+      const response = await fetch(imageUri);
+      const blob = await response.blob();
+
+      // Prepare FormData
+      const formData = new FormData();
+      formData.append('file', blob, 'profile_picture.jpg'); // Append as a Blob with a filename
+
+      try {
+        // Make the API call
+        const userId = await AsyncStorage.getItem('userId');
+        if (!userId) {
+          alert('User ID not found');
+          return;
+        }
+
+        const uploadResponse = await fetch(`http://<your-backend-url>/api/user/${userId}/profilePicture`, {
+          method: 'POST',
+          body: formData,
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        });
+
+        if (uploadResponse.ok) {
+          alert('Profile picture updated successfully!');
+        } else {
+          const errorData = await uploadResponse.json();
+          alert(`Failed to upload profile picture: ${errorData.message}`);
+        }
+      } catch (error) {
+        console.error('Error uploading profile picture:', error);
+        alert('An error occurred while uploading the profile picture.');
+      }
     }
   };
 
@@ -67,20 +147,27 @@ export default function TabTwoScreen() {
   return (
     <View style={styles.container}>
       <ThemedView style={styles.titleContainer}>
-        {/* need to change this to actually be centered and not have the spaces */}
         <View style={styles.centered}>
           <ThemedText type="title">{username}{'\n'}</ThemedText>
         </View>
       </ThemedView>
-      {/* <Image source={require('@/assets/images/braver-blank-pfp_new.jpg')} style={{ alignSelf: 'center' }} /> */}
-      {/* going to change image on click here */}
-          {/* Profile Picture */}
+      
+      {/* Profile Picture */}
       <TouchableOpacity onPress={handleImageChange}>
         <Image
           source={imageSrc ? { uri: imageSrc } : require('@/assets/images/braver-blank-pfp_new.jpg')}
           style={styles.profileImage}
         />
       </TouchableOpacity>
+
+      {/* Remove Profile Picture Button
+      <TouchableOpacity
+        style={[styles.button, !imageSrc && styles.disabledButton]}
+        onPress={confirmDeleteProfilePicture}
+        disabled={!imageSrc}
+      >
+        <Text style={styles.buttonText}>Remove Profile Picture</Text>
+      </TouchableOpacity> */}
 
       {/* Past Reviews button */}
       <TouchableOpacity style={[styles.button, styles.pastRatingsButton]} onPress={navigateToPastReviews}>
@@ -151,4 +238,7 @@ const styles = StyleSheet.create({
   pastRatingsButton: {
     backgroundColor: '#6200EE',
   },  
+  disabledButton: {
+    backgroundColor: '#aaa',
+  },
 });

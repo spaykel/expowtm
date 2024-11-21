@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { ScrollView, View, Text, TouchableOpacity, Image, StyleSheet, Modal, TextInput, Alert, Linking } from 'react-native';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { useLocalSearchParams } from 'expo-router';
-import {useNavigation } from '@react-navigation/native';
 import { useRouter } from 'expo-router';
 
 
@@ -55,9 +54,10 @@ const BarProfile: React.FC = () => {
   const { bar: barParam } = useLocalSearchParams<{ bar: string }>();
   let bar: Bar = JSON.parse(decodeURIComponent(barParam));
 
-  const navigation = useNavigation();
+  const router = useRouter();
+
   const handleBackPress = () => {
-    navigation.goBack();
+    router.back();
   };
 
 
@@ -65,7 +65,6 @@ const BarProfile: React.FC = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [busynessRating, setBusynessRating] = useState('');
   const [currentBusyness, setCurrentBusyness] = useState<number | null>(null); // State for current busyness
-  const router = useRouter();
 
   
   const navigateToLeaveReview = () => router.push('../(stack)/leaveReview');

@@ -5,7 +5,6 @@ import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
 import { useLocalSearchParams } from 'expo-router';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import {useNavigation } from '@react-navigation/native';
 import { useRouter } from "expo-router";
 
 //in the format of the json that the google maps api returns
@@ -70,9 +69,8 @@ const BarListScreen: React.FC = () => {
 
   const router = useRouter();
 
-  const navigation = useNavigation();
   const handleBackPress = () => {
-    navigation.goBack();
+    router.back();
   };
   
   const handleBarPress = (barData: Bar) => {

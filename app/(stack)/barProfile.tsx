@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
-import { ScrollView, View, Text, TouchableOpacity, Image, StyleSheet, Modal, TextInput, Alert, Linking } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { Platform, ScrollView, View, Text, TouchableOpacity, Image, StyleSheet, Modal, TextInput, Alert, Linking } from 'react-native';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
-import { useLocalSearchParams } from 'expo-router';
-import { useRouter } from 'expo-router';
+import { useLocalSearchParams,useRouter } from 'expo-router';
+import axios from "axios";
 
 
 //in the format of the json that the google maps api returns
@@ -54,28 +54,55 @@ const BarProfile: React.FC = () => {
   const { bar: barParam } = useLocalSearchParams<{ bar: string }>();
   let bar: Bar = JSON.parse(decodeURIComponent(barParam));
 
+  const [photo, setPhoto] = useState<string | null>(null); // State for storing photo URL
+  
   const router = useRouter();
 
   const handleBackPress = () => {
     router.back();
   };
 
+  const getBaseUrl = () => (Platform.OS === "android" ? "http://10.0.2.2:5000" : "http://localhost:5000");
+
+  const getPhoto = async (width: number, reference: string) => {
+    try {
+      const baseUrl = getBaseUrl();
+      const requestUrl = `${baseUrl}/api/photos`;
+      const params = {
+        width,
+        reference
+      };
+      const response = await axios.get(requestUrl, { params });
+      return response.data;
+    } catch {
+      console.error("Error fetching photos");
+      return null; // Return null if there's an error fetching the photo
+    }
+  };
+
+  // Fetch photo URL when the component mounts
+  useEffect(() => {
+    const fetchPhoto = async () => {
+      const url = await getPhoto(400, bar.photos[0]?.photo_reference);
+      setPhoto(url.imageUrl); // Update state with the photo URL
+      console.log(url.imageUrl);
+    };
+    fetchPhoto();
+  }, [bar.photos[0]?.photo_reference]);
 
   const [starRating, setStarRating] = useState(0);
   const [modalVisible, setModalVisible] = useState(false);
   const [busynessRating, setBusynessRating] = useState('');
   const [currentBusyness, setCurrentBusyness] = useState<number | null>(null); // State for current busyness
 
-  
   const navigateToLeaveReview = () => router.push('../(stack)/leaveReview');
 
   const handleGetDirections = () => {
-    const directionsUrl = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(bar.name)}&destination_place_id${bar.place_id}`;
+    const directionsUrl = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(bar.name)}&destination_place_id=${bar.place_id}`;
     Linking.openURL(directionsUrl).catch((err) =>
       Alert.alert("Error", "Unable to open the directions link.")
-    );  
+    );
   };
-
 
   const handleReportBusyness = () => {
     const rating = parseInt(busynessRating);
@@ -103,7 +130,11 @@ const BarProfile: React.FC = () => {
       <Text style={styles.barAddress}>{bar.vicinity}</Text>
 
       {/* Bar Image */}
-      <Image style={styles.image} source={require("@/assets/images/ontherox.png")} />
+      {photo ? (
+        <Image style={styles.image} source={{uri: photo}} />
+      ) : (
+        <Text style={styles.loadingText}>Loading image...</Text> // Display loading text while the photo is being fetched
+      )}
 
       {/* Display Current Busyness */}
       <Text style={styles.busynessText}>
@@ -178,6 +209,7 @@ const BarProfile: React.FC = () => {
   );
 };
 
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -193,6 +225,7 @@ const styles = StyleSheet.create({
   image: {
     width: '90%',
     height: 250,
+    resizeMode: 'cover',
     marginVertical: 20,
     borderRadius: 10,
   },
@@ -247,6 +280,13 @@ const styles = StyleSheet.create({
   text: {
     color: '#BDBDBD',
     fontSize: 20,
+  },
+   loadingText: {
+    color: '#FFFFFF',
+    fontSize: 18,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginVertical: 20,
   },
   barName: {
     color: '#FFFFFF',

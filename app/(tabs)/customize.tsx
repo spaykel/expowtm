@@ -6,7 +6,6 @@ import * as ImagePicker from 'expo-image-picker';
 import {useEffect, useState} from 'react';
 import { useRouter } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import axios from 'axios';
 
 /* TO DO:
   need to make the users account information appear after they sign in (username, name, age)
@@ -15,8 +14,6 @@ import axios from 'axios';
 */
 export default function TabTwoScreen() {
   const [username, setUsername] = useState('');
-  const [name, setName] = useState('');
-  const [age, setAge] = useState('');
 
   let numBarsVisited = 50;
   const router = useRouter();
@@ -148,7 +145,7 @@ export default function TabTwoScreen() {
     <View style={styles.container}>
       <ThemedView style={styles.titleContainer}>
         <View style={styles.centered}>
-          <ThemedText type="title">{username}{'\n'}</ThemedText>
+          <ThemedText type="title" style={{ color: 'white' }}>{username}{'\n'}</ThemedText>
         </View>
       </ThemedView>
       

@@ -1,13 +1,11 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, Image, TouchableOpacity} from 'react-native';
+import { View, Text, TextInput, StyleSheet, TouchableOpacity} from 'react-native';
 import Animated, { FadeInUp } from 'react-native-reanimated';
 import { Ionicons} from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { router } from 'expo-router';
-import Login from './login';
 
 const Register = () => {
-  const navigation = useNavigation();
   const [form, setForm] = useState({
     firstname: '',
     lastname: '',
@@ -23,7 +21,7 @@ const Register = () => {
 
   const handleSubmit = async () => {
     try {
-      const response = await fetch("http://192.168.3.189:8080/api/user/register", {
+      const response = await fetch("http://192.168.1.219:8080/api/user/register", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

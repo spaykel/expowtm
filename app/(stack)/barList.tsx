@@ -25,7 +25,7 @@ const BarListScreen: React.FC = () => {
   // Add bar to the database
   const addBar = async (bar: Bar) => {
     try {
-      const response = await fetch('http://192.168.2.241:8080/bars', {
+      const response = await fetch('http://192.168.1.54:8080/bars', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

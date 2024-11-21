@@ -21,7 +21,7 @@ const AddFriendsScreen: React.FC = () => {
       try {
         const storedUsername = await AsyncStorage.getItem('username');
         await axios.post(
-          'http://192.168.3.51:8080/api/friends/add', 
+          'http://192.168.1.63:8080/api/friends/add', 
           {
             username: storedUsername,  
             friendUsername: search,           

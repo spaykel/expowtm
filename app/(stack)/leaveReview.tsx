@@ -12,7 +12,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 const LeaveReview: React.FC = () => {
   const [review, setReview] = useState('');
 
-  const backendUrl = 'http://192.168.2.241:8080'; // Use your server's IP and port
+  const backendUrl = 'http://192.168.1.63:8080'; // Use your server's IP and port
 
   const handleSubmit = async () => {
     if (!review.trim()) {

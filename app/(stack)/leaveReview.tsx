@@ -6,7 +6,6 @@ import { useNavigation } from '@react-navigation/native';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 
-import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const LeaveReview: React.FC = () => {

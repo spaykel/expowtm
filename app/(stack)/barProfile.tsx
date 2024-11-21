@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Platform, ScrollView, View, Text, TouchableOpacity, Image, StyleSheet, Modal, TextInput, Alert, Linking } from 'react-native';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
-import { useLocalSearchParams } from 'expo-router';
-import { useRouter } from 'expo-router';
+import { useLocalSearchParams,useRouter } from 'expo-router';
 import axios from "axios";
 
 
@@ -56,18 +55,7 @@ const BarProfile: React.FC = () => {
   let bar: Bar = JSON.parse(decodeURIComponent(barParam));
 
   const [photo, setPhoto] = useState<string | null>(null); // State for storing photo URL
-
-  // Fetch the photo when the component mounts
-  useEffect(() => {
-    const fetchPhoto = async () => {
-      if (bar.photos && bar.photos[0]) {
-        const imageUrl = await getPhoto(400, bar.photos[0].photo_reference);
-        setPhoto(imageUrl); // Update the state with the fetched photo URL
-      }
-    };
-    fetchPhoto();
-  }, [bar.photos]);
-
+  
   const router = useRouter();
 
   const handleBackPress = () => {
@@ -84,15 +72,23 @@ const BarProfile: React.FC = () => {
         width,
         reference
       };
-      const response = await axios.get(requestUrl, { params, responseType: 'arraybuffer' });
-      const base64Image = `data:image/jpeg;base64,${Buffer.from(response.data, 'binary').toString('base64')}`;
-      return base64Image;
-
+      const response = await axios.get(requestUrl, { params });
+      return response.data;
     } catch {
       console.error("Error fetching photos");
       return null; // Return null if there's an error fetching the photo
     }
   };
+
+  // Fetch photo URL when the component mounts
+  useEffect(() => {
+    const fetchPhoto = async () => {
+      const url = await getPhoto(400, bar.photos[0]?.photo_reference);
+      setPhoto(url.imageUrl); // Update state with the photo URL
+      console.log(url.imageUrl);
+    };
+    fetchPhoto();
+  }, [bar.photos[0]?.photo_reference]);
 
   const [starRating, setStarRating] = useState(0);
   const [modalVisible, setModalVisible] = useState(false);
@@ -135,7 +131,7 @@ const BarProfile: React.FC = () => {
 
       {/* Bar Image */}
       {photo ? (
-        <Image style={styles.image} source={{ uri: photo }} />
+        <Image style={styles.image} source={{uri: photo}} />
       ) : (
         <Text style={styles.loadingText}>Loading image...</Text> // Display loading text while the photo is being fetched
       )}
@@ -229,6 +225,7 @@ const styles = StyleSheet.create({
   image: {
     width: '90%',
     height: 250,
+    resizeMode: 'cover',
     marginVertical: 20,
     borderRadius: 10,
   },

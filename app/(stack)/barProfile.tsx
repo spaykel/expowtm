@@ -1,61 +1,63 @@
 import React, { useState, useEffect } from 'react';
 import { Platform, ScrollView, View, Text, TouchableOpacity, Image, StyleSheet, Modal, TextInput, Alert, Linking } from 'react-native';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
-import { useLocalSearchParams,useRouter } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import axios from "axios";
 
-
-//in the format of the json that the google maps api returns
+// In the format of the JSON that the Google Maps API returns
 type Bar = {
-  business_status: string,
-    geometry: {
-        location: {
-            lat: number,
-            lng: number
-        },
-        viewport: {
-            northeast: {
-                lat: number,
-                lng: number
-            },
-            southwest: {
-                lat: number,
-                lng: number
-            }
-        }
-    },
-    icon: string,
-    icon_background_color: string,
-    icon_mask_base_uri: string,
-    name: string,
-    photos: [
-        {
-            height: number,
-            html_attributions: string[],
-            photo_reference: string,
-            width: number
-        }
-    ],
-    place_id: string,
-    plus_code: {
-        compound_code: string,
-        global_code: string
-    },
-    rating: number,
-    reference: string,
-    scope: string,
-    types: string[],
-    user_ratings_total: number,
-    vicinity: string
+  business_status: string;
+  geometry: {
+    location: {
+      lat: number;
+      lng: number;
+    };
+    viewport: {
+      northeast: {
+        lat: number;
+        lng: number;
+      };
+      southwest: {
+        lat: number;
+        lng: number;
+      };
+    };
+  };
+  icon: string;
+  icon_background_color: string;
+  icon_mask_base_uri: string;
+  name: string;
+  photos: [
+    {
+      height: number;
+      html_attributions: string[];
+      photo_reference: string;
+      width: number;
+    }
+  ];
+  place_id: string;
+  plus_code: {
+    compound_code: string;
+    global_code: string;
+  };
+  rating: number;
+  reference: string;
+  scope: string;
+  types: string[];
+  user_ratings_total: number;
+  vicinity: string;
 };
-
 
 const BarProfile: React.FC = () => {
   const { bar: barParam } = useLocalSearchParams<{ bar: string }>();
   let bar: Bar = JSON.parse(decodeURIComponent(barParam));
 
   const [photo, setPhoto] = useState<string | null>(null); // State for storing photo URL
-  
+  const [starRating, setStarRating] = useState(0);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [busynessRating, setBusynessRating] = useState('');
+  const [currentBusyness, setCurrentBusyness] = useState<number | null>(null); // State for current busyness
+
   const router = useRouter();
 
   const handleBackPress = () => {
@@ -90,10 +92,29 @@ const BarProfile: React.FC = () => {
     fetchPhoto();
   }, [bar.photos[0]?.photo_reference]);
 
-  const [starRating, setStarRating] = useState(0);
-  const [modalVisible, setModalVisible] = useState(false);
-  const [busynessRating, setBusynessRating] = useState('');
-  const [currentBusyness, setCurrentBusyness] = useState<number | null>(null); // State for current busyness
+  // Fetch the current busyness data when the component mounts
+  useEffect(() => {
+    const fetchBusyness = async () => {
+      try {
+        // const baseUrl = getBaseUrl();
+        const apiUrl = `http://192.168.1.54:8080/bars/${bar.place_id}/busyness`;  // Adjust the endpoint if needed
+        const response = await axios.get(apiUrl);
+
+        if (response.status === 200) {
+          console.log(response.data);
+          setCurrentBusyness(response.data);  // Assuming the response contains the busyness in 'busyness' field
+        } else {
+          console.error("Failed to fetch busyness");
+        }
+      } catch (error) {
+        console.error("Error fetching busyness:", error);
+        setCurrentBusyness(null);  // In case of an error, set busyness to null
+      }
+    };
+
+    fetchBusyness();
+    console.log("called fetch busyness");
+  }, [bar.place_id]);  // Re-fetch busyness if the bar place_id changes
 
   const navigateToLeaveReview = () => router.push('../(stack)/leaveReview');
 
@@ -104,13 +125,28 @@ const BarProfile: React.FC = () => {
     );
   };
 
-  const handleReportBusyness = () => {
+  const handleReportBusyness = async () => {
     const rating = parseInt(busynessRating);
     if (rating >= 1 && rating <= 10) {
-      setCurrentBusyness(rating); // Update current busyness
-      Alert.alert("Busyness Reported", `You rated the busyness as: ${rating}/10`);
-      setModalVisible(false);
-      setBusynessRating(''); // Reset the input field
+      try {
+        // PUT request to update busyness
+        const apiUrl = `http://192.168.1.54:8080/bars/${bar.place_id}/busyness`;
+        const response = await axios.put(apiUrl, { busyness: rating });
+  
+        if (response.status === 200) {
+          setCurrentBusyness(rating); // Update current busyness
+          Alert.alert("Busyness Reported", `You rated the busyness as: ${rating}/10`);
+          console.log(`Successfully updated database with ${rating}/10`);
+        } else {
+          Alert.alert("Error", "Failed to update busyness. Please try again.");
+        }
+      } catch (error) {
+        console.error("Error updating busyness:", error);
+        Alert.alert("Error", "Unable to send busyness update.");
+      } finally {
+        setModalVisible(false);
+        setBusynessRating(''); // Reset the input field
+      }
     } else {
       Alert.alert("Invalid Rating", "Please enter a number between 1 and 10.");
     }
@@ -208,7 +244,6 @@ const BarProfile: React.FC = () => {
     </ScrollView>
   );
 };
-
 
 const styles = StyleSheet.create({
   container: {

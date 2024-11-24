@@ -102,17 +102,33 @@ const BarProfile: React.FC = () => {
     );
   };
 
-  const handleReportBusyness = () => {
+  const handleReportBusyness = async () => {
     const rating = parseInt(busynessRating);
     if (rating >= 1 && rating <= 10) {
-      setCurrentBusyness(rating); // Update current busyness
-      Alert.alert("Busyness Reported", `You rated the busyness as: ${rating}/10`);
-      setModalVisible(false);
-      setBusynessRating(''); // Reset the input field
+      try {
+        // PUT request to update busyness
+        const apiUrl = `http://192.168.1.54:8080/bars/${bar.place_id}/busyness`;
+        const response = await axios.put(apiUrl, { busyness: rating });
+  
+        if (response.status === 200) {
+          setCurrentBusyness(rating); // Update current busyness
+          Alert.alert("Busyness Reported", `You rated the busyness as: ${rating}/10`);
+          console.log(`Successfully updated database with ${rating}/10`);
+        } else {
+          Alert.alert("Error", "Failed to update busyness. Please try again.");
+        }
+      } catch (error) {
+        console.error("Error updating busyness:", error);
+        Alert.alert("Error", "Unable to send busyness update.");
+      } finally {
+        setModalVisible(false);
+        setBusynessRating(''); // Reset the input field
+      }
     } else {
       Alert.alert("Invalid Rating", "Please enter a number between 1 and 10.");
     }
   };
+  
 
   return (
     <ScrollView contentContainerStyle={styles.container}>

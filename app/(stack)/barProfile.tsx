@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Platform, ScrollView, View, Text, TouchableOpacity, Image, StyleSheet, Modal, TextInput, Alert, Linking } from 'react-native';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
-import { useLocalSearchParams,useRouter } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import axios from "axios";
 
 // In the format of the JSON that the Google Maps API returns
@@ -53,7 +53,11 @@ const BarProfile: React.FC = () => {
   let bar: Bar = JSON.parse(decodeURIComponent(barParam));
 
   const [photo, setPhoto] = useState<string | null>(null); // State for storing photo URL
-  
+  const [starRating, setStarRating] = useState(0);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [busynessRating, setBusynessRating] = useState('');
+  const [currentBusyness, setCurrentBusyness] = useState<number | null>(null); // State for current busyness
+
   const router = useRouter();
 
   const handleBackPress = () => {
@@ -88,10 +92,29 @@ const BarProfile: React.FC = () => {
     fetchPhoto();
   }, [bar.photos[0]?.photo_reference]);
 
-  const [starRating, setStarRating] = useState(0);
-  const [modalVisible, setModalVisible] = useState(false);
-  const [busynessRating, setBusynessRating] = useState('');
-  const [currentBusyness, setCurrentBusyness] = useState<number | null>(null); // State for current busyness
+  // Fetch the current busyness data when the component mounts
+  useEffect(() => {
+    const fetchBusyness = async () => {
+      try {
+        // const baseUrl = getBaseUrl();
+        const apiUrl = `http://192.168.1.54:8080/bars/${bar.place_id}/busyness`;  // Adjust the endpoint if needed
+        const response = await axios.get(apiUrl);
+
+        if (response.status === 200) {
+          console.log(response.data);
+          setCurrentBusyness(response.data);  // Assuming the response contains the busyness in 'busyness' field
+        } else {
+          console.error("Failed to fetch busyness");
+        }
+      } catch (error) {
+        console.error("Error fetching busyness:", error);
+        setCurrentBusyness(null);  // In case of an error, set busyness to null
+      }
+    };
+
+    fetchBusyness();
+    console.log("called fetch busyness");
+  }, [bar.place_id]);  // Re-fetch busyness if the bar place_id changes
 
   const navigateToLeaveReview = () => router.push('../(stack)/leaveReview');
 
@@ -128,7 +151,6 @@ const BarProfile: React.FC = () => {
       Alert.alert("Invalid Rating", "Please enter a number between 1 and 10.");
     }
   };
-  
 
   return (
     <ScrollView contentContainerStyle={styles.container}>

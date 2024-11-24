@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Platform, ScrollView, View, Text, TouchableOpacity, Image, StyleSheet, Modal, TextInput, Alert, Linking } from 'react-native';
+import { Platform, ScrollView, View, Text, TouchableOpacity, Image, StyleSheet, Modal, TextInput, Alert, Linking, RefreshControl } from 'react-native';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import axios from "axios";
 
-// In the format of the JSON that the Google Maps API returns
 type Bar = {
   business_status: string;
   geometry: {
@@ -52,11 +51,12 @@ const BarProfile: React.FC = () => {
   const { bar: barParam } = useLocalSearchParams<{ bar: string }>();
   let bar: Bar = JSON.parse(decodeURIComponent(barParam));
 
-  const [photo, setPhoto] = useState<string | null>(null); // State for storing photo URL
+  const [photo, setPhoto] = useState<string | null>(null);
   const [starRating, setStarRating] = useState(0);
   const [modalVisible, setModalVisible] = useState(false);
   const [busynessRating, setBusynessRating] = useState('');
-  const [currentBusyness, setCurrentBusyness] = useState<number | null>(null); // State for current busyness
+  const [currentBusyness, setCurrentBusyness] = useState<number | null>(null);
+  const [isRefreshing, setIsRefreshing] = useState(false); // State to manage refresh status
 
   const router = useRouter();
 
@@ -78,43 +78,42 @@ const BarProfile: React.FC = () => {
       return response.data;
     } catch {
       console.error("Error fetching photos");
-      return null; // Return null if there's an error fetching the photo
+      return null;
     }
   };
 
-  // Fetch photo URL when the component mounts
-  useEffect(() => {
-    const fetchPhoto = async () => {
-      const url = await getPhoto(400, bar.photos[0]?.photo_reference);
-      setPhoto(url.imageUrl); // Update state with the photo URL
-      console.log(url.imageUrl);
-    };
-    fetchPhoto();
-  }, [bar.photos[0]?.photo_reference]);
+  const fetchPhoto = async () => {
+    const url = await getPhoto(400, bar.photos[0]?.photo_reference);
+    setPhoto(url.imageUrl);
+  };
 
-  // Fetch the current busyness data when the component mounts
-  useEffect(() => {
-    const fetchBusyness = async () => {
-      try {
-        // const baseUrl = getBaseUrl();
-        const apiUrl = `http://192.168.1.54:8080/bars/${bar.place_id}/busyness`;  // Adjust the endpoint if needed
-        const response = await axios.get(apiUrl);
+  const fetchBusyness = async () => {
+    try {
+      const apiUrl = `http://192.168.1.54:8080/bars/${bar.place_id}/busyness`;
+      const response = await axios.get(apiUrl);
 
-        if (response.status === 200) {
-          console.log(response.data);
-          setCurrentBusyness(response.data);  // Assuming the response contains the busyness in 'busyness' field
-        } else {
-          console.error("Failed to fetch busyness");
-        }
-      } catch (error) {
-        console.error("Error fetching busyness:", error);
-        setCurrentBusyness(null);  // In case of an error, set busyness to null
+      if (response.status === 200) {
+        setCurrentBusyness(response.data);
+      } else {
+        console.error("Failed to fetch busyness");
       }
-    };
+    } catch (error) {
+      console.error("Error fetching busyness:", error);
+      setCurrentBusyness(null);
+    }
+  };
 
+  useEffect(() => {
+    fetchPhoto();
     fetchBusyness();
-    console.log("called fetch busyness");
-  }, [bar.place_id]);  // Re-fetch busyness if the bar place_id changes
+  }, [bar.place_id]);
+
+  const onRefresh = async () => {
+    setIsRefreshing(true);
+    await fetchPhoto();
+    await fetchBusyness();
+    setIsRefreshing(false);
+  };
 
   const navigateToLeaveReview = () => router.push('../(stack)/leaveReview');
 
@@ -129,14 +128,12 @@ const BarProfile: React.FC = () => {
     const rating = parseInt(busynessRating);
     if (rating >= 1 && rating <= 10) {
       try {
-        // PUT request to update busyness
         const apiUrl = `http://192.168.1.54:8080/bars/${bar.place_id}/busyness`;
         const response = await axios.put(apiUrl, { busyness: rating });
-  
+
         if (response.status === 200) {
-          setCurrentBusyness(rating); // Update current busyness
+          setCurrentBusyness(rating);
           Alert.alert("Busyness Reported", `You rated the busyness as: ${rating}/10`);
-          console.log(`Successfully updated database with ${rating}/10`);
         } else {
           Alert.alert("Error", "Failed to update busyness. Please try again.");
         }
@@ -145,7 +142,7 @@ const BarProfile: React.FC = () => {
         Alert.alert("Error", "Unable to send busyness update.");
       } finally {
         setModalVisible(false);
-        setBusynessRating(''); // Reset the input field
+        setBusynessRating('');
       }
     } else {
       Alert.alert("Invalid Rating", "Please enter a number between 1 and 10.");
@@ -153,7 +150,10 @@ const BarProfile: React.FC = () => {
   };
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
+    <ScrollView
+      contentContainerStyle={styles.container}
+      refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={onRefresh} />}
+    >
       {/* Back button */}
       <TouchableOpacity style={styles.backButton} onPress={handleBackPress}>
         <Ionicons name="arrow-back" size={24} color="white" />
@@ -167,9 +167,9 @@ const BarProfile: React.FC = () => {
 
       {/* Bar Image */}
       {photo ? (
-        <Image style={styles.image} source={{uri: photo}} />
+        <Image style={styles.image} source={{ uri: photo }} />
       ) : (
-        <Text style={styles.loadingText}>Loading image...</Text> // Display loading text while the photo is being fetched
+        <Text style={styles.text}>Loading image...</Text>
       )}
 
       {/* Display Current Busyness */}

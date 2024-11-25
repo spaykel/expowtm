@@ -8,8 +8,7 @@ export default function Login() {
   const [password, setPassword] = useState('');
   const [username, setUsername] = useState('');  // Added username state
   const [errorMessage, setErrorMessage] = useState('');
-
-  const backendUrl = "http://192.168.1.63:8080/api/user/login"; // Use your computer's IP address and port
+  const backendUrl = "http://192.168.1.54:8080/api/user/login"; // Use your computer's IP address and port
 
   const handleLogin = async () => {
     console.log('Username:', username);

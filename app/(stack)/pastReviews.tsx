@@ -51,7 +51,7 @@ const PastReviewsScreen: React.FC = () => {
   const fetchReviews = async () => {
     if (!userId) return; // Prevent fetching if userId is null
     try {
-      const response = await axios.get(`http://192.168.1.63:8080/api/reviews/user/${userId}`);
+      const response = await axios.get(`http://192.168.1.54:8080/api/reviews/user/${userId}`);
       setReviews(response.data);
     } catch (error) {
       console.error('Error fetching reviews:', error);

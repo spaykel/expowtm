@@ -22,6 +22,7 @@ const Register = () => {
   const handleSubmit = async () => {
     try {
       const response = await fetch("http://192.168.1.63:8080/api/user/register", {
+
         method: "POST",
         headers: {
           "Content-Type": "application/json",

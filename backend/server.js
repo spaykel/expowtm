@@ -27,6 +27,7 @@ app.get("/api/places", async (req, res) => {
     console.log("Sending API request to Google Maps");
     const response = await axios.get(url);
     console.log("Sending JSON response to frontend");
+    console.log(response.data); //nick put this here delete later
     res.json(response.data); // Send Google API response to frontend
   } catch (error) {
     console.error("Error fetching places:", error);

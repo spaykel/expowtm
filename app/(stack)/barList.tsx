@@ -1,9 +1,11 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
 import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import Ionicons from '@expo/vector-icons/Ionicons';
+import Icon from 'react-native-vector-icons/FontAwesome';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 type Bar = {
   business_status: string,
@@ -12,19 +14,49 @@ type Bar = {
   name: string,
   place_id: string,
   rating: number,
-  vicinity: string
+  vicinity: string,
 };
 
 const BarListScreen: React.FC = () => {
   const { bars: barsParam } = useLocalSearchParams<{ bars: string }>();
   const router = useRouter();
+  const [favorites, setFavorites] = useState<string[]>([]);
 
   let bars: Bar[] = barsParam ? JSON.parse(decodeURIComponent(barsParam)) : [];
 
-  // Add bar to the database
+  const addToFavorites = async (placeId: string) => {
+    try {
+      const userId = await AsyncStorage.getItem('userId');
+
+      if (!userId) {
+        console.error('User ID not found.');
+        return;
+      }
+
+      const response = await fetch('http://192.168.1.108:8080/api/favorites/add', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          userId: userId,
+          placeId: placeId,
+        }),
+      });
+
+      if (response.ok) {
+        console.log(`Bar with index ${placeId} added to favorites.`);
+        setFavorites((prevFavorites) => [...prevFavorites, placeId]); // Update local state
+      } else {
+        const errorMsg = await response.text();
+        console.error(`Failed to add bar to favorites. Server responded with: ${errorMsg}`);
+      }
+    } catch (error) {
+      console.error('Error adding bar to favorites:', error);
+    }
+  };
+
   const addBar = async (bar: Bar) => {
     try {
-      const response = await fetch('http://192.168.1.54:8080/bars', {
+      const response = await fetch('http://192.168.1.108:8080/bars', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -53,7 +85,7 @@ const BarListScreen: React.FC = () => {
     };
 
     addAllBars();
-  }, []); // Empty dependency array ensures this runs only once
+  }, []);
 
   const handleBackPress = () => router.back();
 
@@ -75,14 +107,24 @@ const BarListScreen: React.FC = () => {
       </View>
 
       <ScrollView contentContainerStyle={styles.barList} showsVerticalScrollIndicator={false}>
-        {bars.map((item) => (
-          <TouchableOpacity key={item.place_id} style={styles.barItem} onPress={() => handleBarPress(item)}>
-            <View style={styles.barInfoContainer}>
-              <Text style={styles.name}>{item.name}</Text>
-              <Text style={styles.address}>Address: {item.vicinity}</Text>
-              <Text style={styles.rating}>Rating: {item.rating} / 5</Text>
-            </View>
-          </TouchableOpacity>
+        {bars.map((item, index) => (
+          <View key={index} style={styles.barItem}>
+            <TouchableOpacity style={{ flex: 1 }} onPress={() => handleBarPress(item)}>
+              <View style={styles.barInfoContainer}>
+                <Text style={styles.name}>{item.name}</Text>
+                <Text style={styles.address}>Address: {item.vicinity}</Text>
+                <Text style={styles.rating}>Rating: {item.rating} / 5</Text>
+              </View>
+            </TouchableOpacity>
+
+            <TouchableOpacity onPress={() => addToFavorites(item.place_id)}>
+              <Icon
+                name={favorites.includes(item.place_id) ? "heart" : "heart-o"}
+                size={20}
+                color={favorites.includes(item.place_id) ? "red" : "gray"}
+              />
+            </TouchableOpacity>
+          </View>
         ))}
       </ScrollView>
     </ThemedView>

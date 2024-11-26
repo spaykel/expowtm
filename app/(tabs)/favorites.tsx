@@ -1,19 +1,18 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, ScrollView, StyleSheet, TouchableOpacity, Image, RefreshControl } from 'react-native';
+import { Platform, View, Text, ScrollView, StyleSheet, TouchableOpacity, Image, RefreshControl } from 'react-native';
 import { useRouter } from 'expo-router';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from "axios";
 
 type Bar = {
-  business_status: string;
   busyness: number;
-  geometry: { location: { lat: number; lng: number } };
-  icon: string;
   name: string;
-  place_id: string;
-  rating: number;
+  placeId: string;
+  created_at: string;
+  address: string;
   vicinity: string;
 };
 
@@ -37,11 +36,11 @@ const Favorites: React.FC = () => {
         const barDetailsPromises = favoriteBarIds.map(async (barId: number) => {
           console.log('Parsed JSON:', favoriteBarIds);
           const barResponse = await fetch(`http://192.168.1.108:8080/bars/${barId}`);
-          console.log(barResponse)
           return await barResponse.json();
         });
 
         const bars = await Promise.all(barDetailsPromises);
+        console.log(bars);
         setFavoriteBars(bars);
       } else {
         console.error('Expected an array of favorite bar IDs, but got:', favoriteBarIds);
@@ -57,12 +56,27 @@ const Favorites: React.FC = () => {
     fetchFavoriteBars();
   }, []); 
 
-  const handleBarPress = (barData: Bar) => {
-    console.log(barData)
-    router.push({
-      pathname: '../(stack)/barProfile',
-      params: { bar: encodeURIComponent(JSON.stringify(barData)) },
-    });
+  const getBaseUrl = () => (Platform.OS === "android" ? "http://10.0.2.2:5000" : "http://localhost:5000");
+
+
+  const handleBarPress = async (place_id: string) => {
+    try{
+      const baseUrl = getBaseUrl();
+      const requestUrl = `${baseUrl}/api/find`;
+      const params = {
+        place_id,
+      };
+      const response = await axios.get(requestUrl, { params });
+      console.log(response.data.result);
+      router.push({
+        pathname: '../(stack)/barProfile',
+        params: { bar: encodeURIComponent(JSON.stringify(response.data.result)) },
+      });
+    }catch {
+      console.error("Error fetching place by text");
+      return null;
+    }
+    
   };
 
   return (
@@ -83,10 +97,9 @@ const Favorites: React.FC = () => {
           <Text style={styles.noFavoritesText}>You have no favorite bars yet.</Text>
         ) : (
           favoriteBars.map((bar, index) => (
-            <TouchableOpacity key={bar.place_id || index} style={styles.barItem} onPress={() => handleBarPress(bar)}>
+              <TouchableOpacity key={bar.placeId} style={styles.barItem} onPress={() => handleBarPress(bar.placeId)}>
               <View style={styles.barInfoContainer}>
                 <Text style={styles.name}>{bar.name}</Text>
-                <Text style={styles.rating}>Busyness: {bar.busyness} / 10</Text>
               </View>
             </TouchableOpacity>
           ))
@@ -153,7 +166,7 @@ const styles = StyleSheet.create({
   name: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#ffffff',
+    color: '#ffffff',   
   },
   address: {
     fontSize: 14,

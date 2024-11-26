@@ -12,6 +12,22 @@ app.use(cors());
 
 const GOOGLE_API_KEY = process.env.API_KEY;
 
+app.get("/api/find", async (req, res) => {
+  const{
+    place_id,
+  } = req.query;
+  const url = `https://maps.googleapis.com/maps/api/place/details/json?place_id=${place_id}&key=${GOOGLE_API_KEY}`;
+  try {
+    console.log("Sending API request to Google Maps");
+    const response = await axios.get(url);
+    console.log("Sending JSON response to frontend");
+    res.json(response.data); // Send Google API response to frontend
+  } catch (error) {
+    console.error("Error fetching place by text:", error);
+    res.status(500).json({ message: "Error fetching place by text" });
+  }
+});
+
 app.get("/api/places", async (req, res) => {
   const {
     latitude,
@@ -27,7 +43,6 @@ app.get("/api/places", async (req, res) => {
     console.log("Sending API request to Google Maps");
     const response = await axios.get(url);
     console.log("Sending JSON response to frontend");
-    console.log(response.data); //nick put this here delete later
     res.json(response.data); // Send Google API response to frontend
   } catch (error) {
     console.error("Error fetching places:", error);
@@ -57,7 +72,6 @@ app.get("/api/photos", async (req, res) => {
   const { width, reference } = req.query;
 
   const url = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=${width}&photo_reference=${reference}&key=${GOOGLE_API_KEY}`;
-  console.log(url);
 
   try {
     // Fetch the photo from the Google API
@@ -66,7 +80,6 @@ app.get("/api/photos", async (req, res) => {
     if (response.status === 302) {
       // Log the redirected URL (actual image URL)
       const imageUrl = response.headers.location;
-      console.log("Redirected URL:", imageUrl);
 
       // Optionally, you can send this URL to the frontend
       res.json({ imageUrl });

@@ -48,6 +48,8 @@ type Bar = {
 };
 
 const BarProfile: React.FC = () => {
+
+
   const { bar: barParam } = useLocalSearchParams<{ bar: string }>();
   let bar: Bar = JSON.parse(decodeURIComponent(barParam));
 

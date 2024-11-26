@@ -28,9 +28,9 @@ const PastReviewsScreen: React.FC = () => {
       {/* Scrollable list of ratings */}
       <ScrollView contentContainerStyle={styles.ratingsList} showsVerticalScrollIndicator={false}>
         {[
-          { name: 'On the rox', rating: '5/5' },
-          { name: 'Mate Bar', rating: '5/5' },
-          { name: 'The Ice Club', rating: '3/5' },
+          { name: 'The Caravan Lounge', rating: '5/5' },
+          { name: 'Mate Bar', rating: '4/5' },
+          { name: 'The Ice Club', rating: '1/5' },
         ].map((item, index) => (
           <TouchableOpacity key={index} style={styles.ratingItem}>
             <ThemedText type="defaultSemiBold" style={styles.barName}>{item.name}</ThemedText>

@@ -21,13 +21,13 @@ export default function About() {
             <ThemedView style={styles.titleContainer}>
                 {/* need to change this to actually be centered and not have the spaces */}
                 <View style={styles.centered}>
-                    <ThemedText type="title">About Us{'\n'}</ThemedText>
+                    <ThemedText style={styles.text} type="title">About Us{'\n'}</ThemedText>
                 </View>
             </ThemedView>
 
             <ScrollView contentContainerStyle={styles.friendsList} showsVerticalScrollIndicator={false}>
                 {/* This is going to be where we have our text about ourselves, still need to add a clickable link for the "here" in the last sentence*/}
-                <ThemedText>
+                <ThemedText style={styles.text}>
                 {'\n'}This app was created by Miguel Coronado, Nick Carboni, Sammy Paykel, and Tyler Hamilton. We are all 
                 students at California Polytechnic University in San Luis Obispo taking Computer Science related majors. We developed this 
                 app while taking Software Engineering I and II while studying abroad in Rome, Italy. With the teachings from Professor, 
@@ -62,5 +62,8 @@ const styles = StyleSheet.create({
   },
   friendsList: {
     alignItems: 'center',
+  },
+  text: {
+    color: '#ffffff',
   },
 });

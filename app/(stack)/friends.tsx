@@ -20,7 +20,7 @@ const FriendScreen: React.FC = () => {
         const storedUsername = await AsyncStorage.getItem('username');
         console.log("Stored Username:", storedUsername);
         
-        const response = await axios.get(`http://192.168.3.51:8080/api/friends/list`, {
+        const response = await axios.get(`http://192.168.1.108:8080/api/friends/list`, {
           params: {username: storedUsername},
         });
         setFriends(response.data);

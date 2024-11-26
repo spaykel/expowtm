@@ -8,6 +8,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 type Bar = {
   business_status: string;
+  busyness: number;
   geometry: { location: { lat: number; lng: number } };
   icon: string;
   name: string;
@@ -15,6 +16,7 @@ type Bar = {
   rating: number;
   vicinity: string;
 };
+
 
 const Favorites: React.FC = () => {
   const router = useRouter();
@@ -29,10 +31,13 @@ const Favorites: React.FC = () => {
       const userId = storedUserId;
       const response = await fetch(`http://192.168.1.108:8080/api/favorites/list?userId=${userId}`);
       const favoriteBarIds = await response.json();
+      console.log(favoriteBarIds);
 
       if (Array.isArray(favoriteBarIds)) {
         const barDetailsPromises = favoriteBarIds.map(async (barId: number) => {
+          console.log('Parsed JSON:', favoriteBarIds);
           const barResponse = await fetch(`http://192.168.1.108:8080/bars/${barId}`);
+          console.log(barResponse)
           return await barResponse.json();
         });
 
@@ -53,6 +58,7 @@ const Favorites: React.FC = () => {
   }, []); 
 
   const handleBarPress = (barData: Bar) => {
+    console.log(barData)
     router.push({
       pathname: '../(stack)/barProfile',
       params: { bar: encodeURIComponent(JSON.stringify(barData)) },
@@ -80,7 +86,7 @@ const Favorites: React.FC = () => {
             <TouchableOpacity key={bar.place_id || index} style={styles.barItem} onPress={() => handleBarPress(bar)}>
               <View style={styles.barInfoContainer}>
                 <Text style={styles.name}>{bar.name}</Text>
-                <Text style={styles.rating}>Rating: {bar.business_status} / 5</Text>
+                <Text style={styles.rating}>Busyness: {bar.busyness} / 10</Text>
               </View>
             </TouchableOpacity>
           ))

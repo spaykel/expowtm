@@ -21,7 +21,7 @@ const AddFriendsScreen: React.FC = () => {
       try {
         const storedUsername = await AsyncStorage.getItem('username');
         await axios.post(
-          'http://192.168.1.63:8080/api/friends/add', 
+          'http://192.168.1.108:8080/api/friends/add', 
           {
             username: storedUsername,  
             friendUsername: search,           
@@ -110,6 +110,8 @@ const styles = StyleSheet.create({
     padding: 15,
     borderTopLeftRadius: 25,
     borderBottomLeftRadius: 25,
+    borderTopRightRadius: 25,
+    borderBottomRightRadius: 25,
     backgroundColor: '#333',
     height: 60,
     color: '#fff',

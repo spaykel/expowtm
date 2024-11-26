@@ -48,6 +48,8 @@ type Bar = {
 };
 
 const BarProfile: React.FC = () => {
+
+
   const { bar: barParam } = useLocalSearchParams<{ bar: string }>();
   let bar: Bar = JSON.parse(decodeURIComponent(barParam));
 
@@ -89,7 +91,7 @@ const BarProfile: React.FC = () => {
 
   const fetchBusyness = async () => {
     try {
-      const apiUrl = `http://192.168.1.54:8080/bars/${bar.place_id}/busyness`;
+      const apiUrl = `http://192.168.1.108:8080/bars/${bar.place_id}/busyness`;
       const response = await axios.get(apiUrl);
 
       if (response.status === 200) {
@@ -128,7 +130,7 @@ const BarProfile: React.FC = () => {
     const rating = parseInt(busynessRating);
     if (rating >= 1 && rating <= 10) {
       try {
-        const apiUrl = `http://192.168.1.54:8080/bars/${bar.place_id}/busyness`;
+        const apiUrl = `http://192.168.1.108:8080/bars/${bar.place_id}/busyness`;
         const response = await axios.put(apiUrl, { busyness: rating });
 
         if (response.status === 200) {

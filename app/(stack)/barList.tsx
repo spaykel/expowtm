@@ -90,6 +90,7 @@ const BarListScreen: React.FC = () => {
   const handleBackPress = () => router.back();
 
   const handleBarPress = (barData: Bar) => {
+    console.log(barData)
     router.push({
       pathname: '../(stack)/barProfile',
       params: { bar: encodeURIComponent(JSON.stringify(barData)) },

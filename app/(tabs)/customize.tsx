@@ -95,7 +95,7 @@ export default function TabTwoScreen() {
       </TouchableOpacity>
       
       {/* Going to also need to change this when we get the back end running */}
-      <ThemedText>{'\n'}You have visited {numBarsVisited} Bars!!{'\n'}</ThemedText>
+      {/* <ThemedText>{'\n'}You have visited {numBarsVisited} Bars!!{'\n'}</ThemedText> */}
 
     </View>
   );

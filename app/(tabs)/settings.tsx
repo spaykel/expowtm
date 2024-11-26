@@ -29,14 +29,6 @@ export default function SettingsScreen() {
     <ScrollView style={styles.container}>
       <Text style={styles.title}>Settings</Text>
 
-      {/* <TouchableOpacity style={styles.item}>
-        <View style={styles.iconText}>
-          <FontAwesome name="user-o" size={24} color="#fff" />
-          <Text style={styles.text}>Accounts</Text>
-        </View>
-        <Entypo name="chevron-right" size={24} color="#fff" />
-      </TouchableOpacity> */}
-
       <TouchableOpacity style={styles.item} onPress={() => toggleModal('Notifications')}>
         <View style={styles.iconText}>
           <FontAwesome name="bell-o" size={24} color="#fff" />
@@ -71,27 +63,6 @@ export default function SettingsScreen() {
           </View>
         </View>
       </Modal>
-
-      {/* <TouchableOpacity style={styles.item}>
-        <View style={styles.iconText}>
-          <FontAwesome name="lock" size={24} color="#fff" />
-          <Text style={styles.text}>Privacy</Text>
-        </View>
-        <Entypo name="chevron-right" size={24} color="#fff" />
-      </TouchableOpacity> */}
-
-      <View style={styles.item}>
-        <View style={styles.iconText}>
-          <FontAwesome name="sun-o" size={24} color="#fff" />
-          <Text style={styles.text}>Light/Night Mode</Text>
-        </View>
-        <Switch
-          trackColor={{ false: '#767577', true: '#81b0ff' }}
-          thumbColor={isDarkMode ? '#fff' : '#f4f3f4'}
-          onValueChange={toggleSwitch}
-          value={isDarkMode}
-        />
-      </View>
 
       <TouchableOpacity style={styles.item} onPress={navigateToAbout}>
         <View style={styles.iconText}>
